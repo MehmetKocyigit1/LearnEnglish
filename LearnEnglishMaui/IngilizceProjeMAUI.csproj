@@ -65,8 +65,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\LearnEnglishAPI-clone\Application\IngilizceProje.Application.csproj" />
-	  <ProjectReference Include="..\LearnEnglishAPI-clone\Domain\IngilizceProje.Domain.csproj" />
+	  <ProjectReference Include="..\LearnEnglishAPI\Application\IngilizceProje.Application.csproj" />
+	  <ProjectReference Include="..\LearnEnglishAPI\Domain\IngilizceProje.Domain.csproj" />
 	</ItemGroup>
 
 </Project>

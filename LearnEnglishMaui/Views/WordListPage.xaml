@@ -725,13 +725,13 @@
                         <VerticalStackLayout Grid.Column="0" Spacing="10" BindableLayout.ItemsSource="{Binding QuizItems}">
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="vm:UserQuizMatchingItem">
-                                    <Border StrokeThickness="2"
-                                            StrokeShape="RoundRectangle 12"
-                                            Padding="12,12"
-                                            Stroke="{Binding MatchBorderColor}"
+                                    <Border StrokeThickness="{Binding BorderThickness, FallbackValue=1.5}"
+                                            StrokeShape="RoundRectangle 14"
+                                            Padding="13,12"
+                                            Stroke="{Binding MatchBorderBrush}"
                                             BackgroundColor="{Binding MatchBgColor}">
                                         <Border.Shadow>
-                                            <Shadow Brush="#000000" Offset="0,2" Radius="4" Opacity="0.05"/>
+                                            <Shadow Brush="#000000" Offset="0,2" Radius="6" Opacity="0.06"/>
                                         </Border.Shadow>
                                         <Border.GestureRecognizers>
                                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:WordListViewModel}}, Path=SelectEnglishWordCommand}"
@@ -787,13 +787,13 @@
                         <VerticalStackLayout Grid.Column="1" Spacing="10" BindableLayout.ItemsSource="{Binding TurkishOptions}">
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="vm:QuizTurkishOptionItem">
-                                    <Border StrokeThickness="2"
-                                            StrokeShape="RoundRectangle 12"
-                                            Padding="12,12"
-                                            Stroke="{Binding MatchBorderColor}"
+                                    <Border StrokeThickness="{Binding BorderThickness, FallbackValue=1.5}"
+                                            StrokeShape="RoundRectangle 14"
+                                            Padding="13,12"
+                                            Stroke="{Binding MatchBorderBrush}"
                                             BackgroundColor="{Binding MatchBgColor}">
                                         <Border.Shadow>
-                                            <Shadow Brush="#000000" Offset="0,2" Radius="4" Opacity="0.05"/>
+                                            <Shadow Brush="#000000" Offset="0,2" Radius="6" Opacity="0.06"/>
                                         </Border.Shadow>
                                         <Border.GestureRecognizers>
                                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:WordListViewModel}}, Path=SelectTurkishOptionCommand}"
@@ -877,15 +877,50 @@
                         Padding="0,4">
                 <VerticalStackLayout Spacing="16">
 
+                    <!-- Top Counter & Status Indicator -->
+                    <Grid ColumnDefinitions="Auto, *, Auto" VerticalOptions="Center" Margin="4,0,4,-4">
+                        <Border Grid.Column="0"
+                                BackgroundColor="{AppThemeBinding Light=#EEF2FF, Dark=#312E81}"
+                                Stroke="{AppThemeBinding Light=#C7D2FE, Dark=#4338CA}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 8"
+                                Padding="10,4">
+                            <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                <Label Text="🃏" FontSize="12" VerticalOptions="Center"/>
+                                <Label Text="Kelime Kartı"
+                                       FontSize="12"
+                                       FontAttributes="Bold"
+                                       TextColor="#4F46E5"
+                                       VerticalOptions="Center"/>
+                            </HorizontalStackLayout>
+                        </Border>
+
+                        <Border Grid.Column="2"
+                                BackgroundColor="{AppThemeBinding Light=#F1F5F9, Dark=#1E293B}"
+                                Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 8"
+                                Padding="10,4">
+                            <Label Text="{Binding FlashcardCounterText, FallbackValue='Kart 1 / 1'}"
+                                   FontSize="12"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource LightTextSecondary}, Dark=#CBD5E1}"
+                                   VerticalOptions="Center"/>
+                        </Border>
+                    </Grid>
+
                     <!-- Flashcard Card Container -->
-                    <Border Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
-                            StrokeThickness="1"
-                            StrokeShape="RoundRectangle 20"
+                    <Border Stroke="{AppThemeBinding Light=#6366F1, Dark=#818CF8}"
+                            StrokeThickness="2.5"
+                            StrokeShape="RoundRectangle 22"
                             BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
-                            HeightRequest="280"
-                            Padding="20,20">
+                            HeightRequest="290"
+                            Padding="22,18">
                         <Border.Shadow>
-                            <Shadow Brush="#000000" Offset="0,4" Radius="12" Opacity="{AppThemeBinding Light=0.08, Dark=0.3}"/>
+                            <Shadow Brush="{AppThemeBinding Light=#6366F1, Dark=#000000}" 
+                                    Offset="0,6" 
+                                    Radius="16" 
+                                    Opacity="{AppThemeBinding Light=0.18, Dark=0.5}"/>
                         </Border.Shadow>
 
                         <Border.GestureRecognizers>
@@ -896,42 +931,88 @@
                             <!-- FRONT OF CARD -->
                             <VerticalStackLayout Spacing="16"
                                                  VerticalOptions="Center"
-                                                 HorizontalOptions="Center"
+                                                 HorizontalOptions="Fill"
                                                  IsVisible="{Binding IsCardFlipped, Converter={StaticResource BoolToValueConverter}, ConverterParameter='False|True'}">
 
-                                <Border BackgroundColor="{Binding CurrentFlashcard.DifficultyBadgeBg}"
-                                        Stroke="{Binding CurrentFlashcard.DifficultyColor}"
-                                        StrokeThickness="1"
-                                        StrokeShape="RoundRectangle 8"
-                                        Padding="8,4"
-                                        HorizontalOptions="Center">
-                                    <Label Text="{Binding CurrentFlashcard.DifficultyBadgeText}"
-                                           FontSize="12"
-                                           FontAttributes="Bold"
-                                           TextColor="{Binding CurrentFlashcard.DifficultyColor}"/>
-                                </Border>
+                                <Grid ColumnDefinitions="*, Auto" HorizontalOptions="Fill">
+                                    <Border Grid.Column="0"
+                                            BackgroundColor="{Binding CurrentFlashcard.DifficultyBadgeBg}"
+                                            Stroke="{Binding CurrentFlashcard.DifficultyColor}"
+                                            StrokeThickness="1"
+                                            StrokeShape="RoundRectangle 8"
+                                            Padding="8,4"
+                                            HorizontalOptions="Start">
+                                        <Label Text="{Binding CurrentFlashcard.DifficultyBadgeText}"
+                                               FontSize="11"
+                                               FontAttributes="Bold"
+                                               TextColor="{Binding CurrentFlashcard.DifficultyColor}"/>
+                                    </Border>
+
+                                    <Border Grid.Column="1"
+                                            BackgroundColor="{AppThemeBinding Light=#EEF2FF, Dark=#312E81}"
+                                            StrokeShape="RoundRectangle 8"
+                                            StrokeThickness="0"
+                                            Padding="8,4">
+                                        <Label Text="🔄 Ön Yüz"
+                                               FontSize="11"
+                                               FontAttributes="Bold"
+                                               TextColor="#6366F1"/>
+                                    </Border>
+                                </Grid>
 
                                 <Label Text="{Binding CurrentFlashcard.EnglishWord}"
-                                       FontSize="26"
+                                       FontSize="28"
                                        FontAttributes="Bold"
                                        TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark=White}"
                                        HorizontalOptions="Center"
                                        HorizontalTextAlignment="Center"/>
 
-                                <Label Text="Çevirmek ve AI açıklamasını görmek için karta dokunun 🔄"
-                                       FontSize="12"
-                                       TextColor="#94A3B8"
-                                       HorizontalOptions="Center"/>
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8FAFC, Dark=#0F172A}"
+                                        Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                                        StrokeThickness="1"
+                                        StrokeShape="RoundRectangle 12"
+                                        Padding="12,6"
+                                        HorizontalOptions="Center">
+                                    <Label Text="👆 Karta dokunarak veya butondan çevirin"
+                                           FontSize="12"
+                                           TextColor="#64748B"
+                                           HorizontalOptions="Center"/>
+                                </Border>
                             </VerticalStackLayout>
 
                             <!-- BACK OF CARD -->
                             <VerticalStackLayout Spacing="10"
                                                  VerticalOptions="Center"
-                                                 HorizontalOptions="Center"
+                                                 HorizontalOptions="Fill"
                                                  IsVisible="{Binding IsCardFlipped}">
 
+                                <Grid ColumnDefinitions="*, Auto" HorizontalOptions="Fill">
+                                    <Border Grid.Column="0"
+                                            BackgroundColor="{AppThemeBinding Light=#F1F5F9, Dark=#334155}"
+                                            StrokeShape="RoundRectangle 8"
+                                            StrokeThickness="0"
+                                            Padding="8,4"
+                                            HorizontalOptions="Start">
+                                        <Label Text="{Binding CurrentFlashcard.WordType, StringFormat='🏷️ {0}'}"
+                                               FontSize="11"
+                                               FontAttributes="Bold"
+                                               TextColor="{AppThemeBinding Light=#475569, Dark=#CBD5E1}"/>
+                                    </Border>
+
+                                    <Border Grid.Column="1"
+                                            BackgroundColor="{AppThemeBinding Light=#ECFDF5, Dark=#064E3B}"
+                                            StrokeShape="RoundRectangle 8"
+                                            StrokeThickness="0"
+                                            Padding="8,4">
+                                        <Label Text="💡 Arka Yüz"
+                                               FontSize="11"
+                                               FontAttributes="Bold"
+                                               TextColor="#059669"/>
+                                    </Border>
+                                </Grid>
+
                                 <Label Text="{Binding CurrentFlashcard.TurkishMeaning}"
-                                       FontSize="20"
+                                       FontSize="22"
                                        FontAttributes="Bold"
                                        TextColor="{AppThemeBinding Light=#2563EB, Dark=#60A5FA}"
                                        HorizontalOptions="Center"
@@ -954,7 +1035,7 @@
                                         StrokeThickness="1"
                                         StrokeShape="RoundRectangle 8"
                                         Padding="10,6"
-                                        Margin="0,4,0,0">
+                                        Margin="0,2,0,0">
                                     <Label Text="{Binding CurrentFlashcard.ExampleSentence, StringFormat='🇬🇧 {0}'}"
                                            FontSize="11"
                                            FontAttributes="Italic"
@@ -965,44 +1046,44 @@
                         </Grid>
                     </Border>
 
-                    <!-- Flashcard Navigation Controls -->
-                    <Grid ColumnDefinitions="*, Auto, *" ColumnSpacing="12" VerticalOptions="Center">
+                    <!-- Flashcard Navigation Controls: [Önceki] [Kartı Çevir] [Sonraki] -->
+                    <Grid ColumnDefinitions="*, 1.4*, *" ColumnSpacing="10" VerticalOptions="Center">
                         <Button Grid.Column="0"
                                 Text="← Önceki"
-                                BackgroundColor="#F1F5F9"
-                                TextColor="#334155"
+                                BackgroundColor="{AppThemeBinding Light=#F1F5F9, Dark=#334155}"
+                                TextColor="{AppThemeBinding Light=#334155, Dark=#F8FAFC}"
                                 FontSize="13"
                                 FontAttributes="Bold"
-                                CornerRadius="10"
-                                HeightRequest="42"
+                                CornerRadius="12"
+                                HeightRequest="44"
                                 Command="{Binding PreviousFlashcardCommand}"/>
 
-                        <Label Grid.Column="1"
-                               Text="{Binding FlashcardIndex, StringFormat='Kart {0}'}"
-                               FontSize="13"
-                               FontAttributes="Bold"
-                               TextColor="{AppThemeBinding Light={StaticResource LightTextSecondary}, Dark=#94A3B8}"
-                               VerticalOptions="Center"/>
-
-                        <Button Grid.Column="2"
-                                Text="Sonraki →"
+                        <Button Grid.Column="1"
+                                Text="Kartı Çevir 🔄"
                                 BackgroundColor="#4F46E5"
                                 TextColor="White"
                                 FontSize="13"
                                 FontAttributes="Bold"
-                                CornerRadius="10"
-                                HeightRequest="42"
+                                CornerRadius="12"
+                                HeightRequest="44"
+                                Command="{Binding FlipFlashcardCommand}">
+                            <Button.Shadow>
+                                <Shadow Brush="#4F46E5" Offset="0,3" Radius="8" Opacity="0.3"/>
+                            </Button.Shadow>
+                        </Button>
+
+                        <Button Grid.Column="2"
+                                Text="Sonraki →"
+                                BackgroundColor="{AppThemeBinding Light=#F1F5F9, Dark=#334155}"
+                                TextColor="{AppThemeBinding Light=#334155, Dark=#F8FAFC}"
+                                FontSize="13"
+                                FontAttributes="Bold"
+                                CornerRadius="12"
+                                HeightRequest="44"
                                 Command="{Binding NextFlashcardCommand}"/>
                     </Grid>
 
-                    <Button Text="Kartı Çevir 🔄"
-                            BackgroundColor="#0EA5E9"
-                            TextColor="White"
-                            FontSize="13"
-                            FontAttributes="Bold"
-                            CornerRadius="10"
-                            HeightRequest="40"
-                            Command="{Binding FlipFlashcardCommand}"/>
+
 
                 </VerticalStackLayout>
             </ScrollView>

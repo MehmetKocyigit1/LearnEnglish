@@ -30,10 +30,10 @@
 
             <!-- Active Card -->
             <Border x:Name="CardBorder" IsVisible="{Binding HasWord}" BackgroundColor="{AppThemeBinding Light={StaticResource LightCardBg}, Dark={StaticResource CardColor}}" 
-                    Stroke="{AppThemeBinding Light={StaticResource LightBorder}, Dark={StaticResource BorderColor}}" StrokeThickness="1.5" StrokeShape="RoundRectangle 24" 
+                    Stroke="{AppThemeBinding Light=#6366F1, Dark=#818CF8}" StrokeThickness="2.5" StrokeShape="RoundRectangle 24" 
                     Padding="24" HeightRequest="350" MaximumWidthRequest="450" HorizontalOptions="Fill" VerticalOptions="Fill">
                 <Border.Shadow>
-                    <Shadow Brush="#000000" Offset="0,10" Radius="20" Opacity="{AppThemeBinding Light=0.06, Dark=0.4}" />
+                    <Shadow Brush="{AppThemeBinding Light=#6366F1, Dark=#000000}" Offset="0,8" Radius="18" Opacity="{AppThemeBinding Light=0.18, Dark=0.5}" />
                 </Border.Shadow>
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnCardTapped"/>

@@ -46,7 +46,7 @@ Kök dizindeki **`LearnEnglish.sln`** dosyasını Visual Studio 2022 ile açın:
 - İsterseniz çözüm ayarlarından "Birden Çok Başlangıç Projesi" (Multiple Startup Projects) seçerek hem API'yi hem MAUI'yi aynı anda tek tıkla çalıştırabilirsiniz.
 
 ### 2. Docker ile Backend ve Web İstemcisini Başlatma
-`LearnEnglishAPI-clone/` dizininde:
+`LearnEnglishAPI/` dizininde:
 ```bash
 docker compose up -d
 ```

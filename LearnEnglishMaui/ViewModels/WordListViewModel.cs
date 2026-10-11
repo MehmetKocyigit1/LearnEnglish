@@ -130,38 +130,56 @@ namespace IngilizceProjeMAUI.ViewModels
         private int _pairIndex = -1;
 
         [ObservableProperty]
-        private string _matchBorderColor = "#E2E8F0";
+        private Brush _matchBorderBrush = new SolidColorBrush(Color.FromArgb("#CBD5E1"));
 
         [ObservableProperty]
-        private string _matchBgColor = "#FFFFFF";
+        private Color _matchBorderColor = Color.FromArgb("#CBD5E1");
 
         [ObservableProperty]
-        private string _matchBadgeBgColor = "#EEF2FF";
+        private Color _matchBgColor = Colors.White;
 
         [ObservableProperty]
-        private string _matchTextColor = "#0F172A";
+        private Color _matchBadgeBgColor = Color.FromArgb("#EEF2FF");
+
+        [ObservableProperty]
+        private Color _matchTextColor = Color.FromArgb("#0F172A");
 
         [ObservableProperty]
         private string _pairBadgeText = string.Empty;
 
+        [ObservableProperty]
+        private double _borderThickness = 1.5;
+
         public void ResetColors()
         {
             PairIndex = -1;
-            MatchBorderColor = "#E2E8F0";
-            MatchBgColor = "#FFFFFF";
-            MatchBadgeBgColor = "#EEF2FF";
-            MatchTextColor = "#0F172A";
+            MatchBorderColor = Color.FromArgb("#CBD5E1");
+            MatchBorderBrush = new SolidColorBrush(Color.FromArgb("#CBD5E1"));
+            MatchBgColor = Colors.White;
+            MatchBadgeBgColor = Color.FromArgb("#EEF2FF");
+            MatchTextColor = Color.FromArgb("#0F172A");
             PairBadgeText = string.Empty;
+            BorderThickness = 1.5;
         }
 
-        public void ApplyPairColor(int index, string borderHex, string bgHex, string badgeBgHex, string textHex)
+        public void ApplyActiveSelection(Color border, Color bg)
+        {
+            MatchBorderColor = border;
+            MatchBorderBrush = new SolidColorBrush(border);
+            MatchBgColor = bg;
+            BorderThickness = 3.5;
+        }
+
+        public void ApplyPairColor(int index, Color border, Color bg, Color badgeBg, Color text)
         {
             PairIndex = index;
-            MatchBorderColor = borderHex;
-            MatchBgColor = bgHex;
-            MatchBadgeBgColor = badgeBgHex;
-            MatchTextColor = textHex;
+            MatchBorderColor = border;
+            MatchBorderBrush = new SolidColorBrush(border);
+            MatchBgColor = bg;
+            MatchBadgeBgColor = badgeBg;
+            MatchTextColor = text;
             PairBadgeText = $"#{index + 1}";
+            BorderThickness = 3.5;
         }
     }
 
@@ -286,13 +304,19 @@ namespace IngilizceProjeMAUI.ViewModels
         private UserWordItem? _currentFlashcard;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(FlashcardCounterText))]
         private int _flashcardIndex = 0;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(FlashcardCounterText))]
         private int _totalFlashcards = 0;
 
         [ObservableProperty]
         private bool _isCardFlipped = false;
+
+        public string FlashcardCounterText => TotalFlashcards > 0
+            ? $"Kart {FlashcardIndex + 1} / {TotalFlashcards}"
+            : "Kart 0 / 0";
 
         public WordListViewModel(ApiService apiService, GeminiAiService geminiAiService)
         {
@@ -850,18 +874,18 @@ namespace IngilizceProjeMAUI.ViewModels
         }
 
         // --- USER WORDS QUIZ MATCHING ENGINE (DUOLINGO STYLE TAP-TO-MATCH) ---
-        private static readonly (string Border, string Bg, string BadgeBg, string Text)[] MatchingPairColorPalette = new[]
+        private static readonly (Color Border, Color Bg, Color BadgeBg, Color Text)[] MatchingPairColorPalette = new[]
         {
-            // Çift 1: Electric Indigo
-            ("#4F46E5", "#EEF2FF", "#C7D2FE", "#3730A3"),
+            // Çift 1: Electric Indigo / Sapphire Blue
+            (Color.FromArgb("#2563EB"), Color.FromArgb("#EFF6FF"), Color.FromArgb("#DBEAFE"), Color.FromArgb("#1D4ED8")),
             // Çift 2: Emerald Green
-            ("#059669", "#ECFDF5", "#A7F3D0", "#065F46"),
+            (Color.FromArgb("#059669"), Color.FromArgb("#ECFDF5"), Color.FromArgb("#D1FAE5"), Color.FromArgb("#065F46")),
             // Çift 3: Vibrant Amber / Orange
-            ("#D97706", "#FFFBEB", "#FDE68A", "#78350F"),
+            (Color.FromArgb("#D97706"), Color.FromArgb("#FFFBEB"), Color.FromArgb("#FDE68A"), Color.FromArgb("#78350F")),
             // Çift 4: Royal Violet / Purple
-            ("#7C3AED", "#F5F3FF", "#DDD6FE", "#4C1D95"),
+            (Color.FromArgb("#7C3AED"), Color.FromArgb("#F5F3FF"), Color.FromArgb("#DDD6FE"), Color.FromArgb("#4C1D95")),
             // Çift 5: Vivid Rose / Pink
-            ("#DB2777", "#FDF2F8", "#FBCFE8", "#831843")
+            (Color.FromArgb("#DB2777"), Color.FromArgb("#FDF2F8"), Color.FromArgb("#FBCFE8"), Color.FromArgb("#831843"))
         };
 
         [RelayCommand]
@@ -895,8 +919,10 @@ namespace IngilizceProjeMAUI.ViewModels
                 item.IsActiveSelection = true;
                 if (!item.IsSelected)
                 {
-                    item.MatchBorderColor = "#3B82F6";
-                    item.MatchBgColor = "#EFF6FF";
+                    int itemIdx = QuizItems.IndexOf(item);
+                    if (itemIdx < 0 || itemIdx >= MatchingPairColorPalette.Length) itemIdx = 0;
+                    var color = MatchingPairColorPalette[itemIdx];
+                    item.ApplyActiveSelection(color.Border, color.Bg);
                 }
             }
         }
@@ -932,8 +958,10 @@ namespace IngilizceProjeMAUI.ViewModels
                 option.IsSelected = true;
                 if (!option.IsMatched)
                 {
-                    option.MatchBorderColor = "#3B82F6";
-                    option.MatchBgColor = "#EFF6FF";
+                    int optIdx = TurkishOptions.IndexOf(option);
+                    if (optIdx < 0 || optIdx >= MatchingPairColorPalette.Length) optIdx = 0;
+                    var color = MatchingPairColorPalette[optIdx];
+                    option.ApplyActiveSelection(color.Border, color.Bg);
                 }
             }
         }
@@ -957,25 +985,16 @@ namespace IngilizceProjeMAUI.ViewModels
                 existingTurkish.ResetColors();
             }
 
-            // Determine an available pair color slot (0..4)
-            var usedPairIndices = QuizItems
-                .Where(q => q != englishItem && q.IsSelected && q.PairIndex >= 0)
-                .Select(q => q.PairIndex)
-                .ToHashSet();
-
-            int assignedPairIdx = 0;
-            for (int i = 0; i < MatchingPairColorPalette.Length; i++)
+            // Designated 5-color slot matching: English item's position (0..4) defines the pair color
+            int assignedPairIdx = QuizItems.IndexOf(englishItem);
+            if (assignedPairIdx < 0 || assignedPairIdx >= MatchingPairColorPalette.Length)
             {
-                if (!usedPairIndices.Contains(i))
-                {
-                    assignedPairIdx = i;
-                    break;
-                }
+                assignedPairIdx = 0;
             }
 
             var pairColor = MatchingPairColorPalette[assignedPairIdx];
 
-            // Pair them with IDENTICAL colors and badges
+            // Pair them with IDENTICAL 5-distinct colors, badges and glowing 3.5px border
             englishItem.SelectedMeaning = turkishOption.Text;
             englishItem.IsActiveSelection = false;
             englishItem.ApplyPairColor(assignedPairIdx, pairColor.Border, pairColor.Bg, pairColor.BadgeBg, pairColor.Text);
@@ -1036,6 +1055,16 @@ namespace IngilizceProjeMAUI.ViewModels
         {
             if (QuizItems == null || QuizItems.Count == 0) return;
 
+            var successBorder = Color.FromArgb("#10B981");
+            var successBg = Color.FromArgb("#ECFDF5");
+            var successBadge = Color.FromArgb("#A7F3D0");
+            var successText = Color.FromArgb("#065F46");
+
+            var errorBorder = Color.FromArgb("#EF4444");
+            var errorBg = Color.FromArgb("#FEF2F2");
+            var errorBadge = Color.FromArgb("#FECACA");
+            var errorText = Color.FromArgb("#991B1B");
+
             int correct = 0;
             foreach (var item in QuizItems)
             {
@@ -1045,36 +1074,24 @@ namespace IngilizceProjeMAUI.ViewModels
                     string.Equals(item.SelectedMeaning.Trim(), item.CorrectMeaning?.Trim(), StringComparison.OrdinalIgnoreCase))
                 {
                     item.IsCorrectMatch = true;
-                    item.MatchBorderColor = "#10B981";
-                    item.MatchBgColor = "#ECFDF5";
-                    item.MatchBadgeBgColor = "#A7F3D0";
-                    item.MatchTextColor = "#065F46";
+                    item.ApplyPairColor(item.PairIndex >= 0 ? item.PairIndex : 0, successBorder, successBg, successBadge, successText);
 
                     if (matchingTurkish != null)
                     {
                         matchingTurkish.IsCorrectMatch = true;
-                        matchingTurkish.MatchBorderColor = "#10B981";
-                        matchingTurkish.MatchBgColor = "#ECFDF5";
-                        matchingTurkish.MatchBadgeBgColor = "#A7F3D0";
-                        matchingTurkish.MatchTextColor = "#065F46";
+                        matchingTurkish.ApplyPairColor(matchingTurkish.PairIndex >= 0 ? matchingTurkish.PairIndex : 0, successBorder, successBg, successBadge, successText);
                     }
                     correct++;
                 }
                 else
                 {
                     item.IsCorrectMatch = false;
-                    item.MatchBorderColor = "#EF4444";
-                    item.MatchBgColor = "#FEF2F2";
-                    item.MatchBadgeBgColor = "#FECACA";
-                    item.MatchTextColor = "#991B1B";
+                    item.ApplyPairColor(item.PairIndex >= 0 ? item.PairIndex : 0, errorBorder, errorBg, errorBadge, errorText);
 
                     if (matchingTurkish != null)
                     {
                         matchingTurkish.IsCorrectMatch = false;
-                        matchingTurkish.MatchBorderColor = "#EF4444";
-                        matchingTurkish.MatchBgColor = "#FEF2F2";
-                        matchingTurkish.MatchBadgeBgColor = "#FECACA";
-                        matchingTurkish.MatchTextColor = "#991B1B";
+                        matchingTurkish.ApplyPairColor(matchingTurkish.PairIndex >= 0 ? matchingTurkish.PairIndex : 0, errorBorder, errorBg, errorBadge, errorText);
                     }
                 }
             }
@@ -1082,8 +1099,7 @@ namespace IngilizceProjeMAUI.ViewModels
             foreach (var t in TurkishOptions.Where(t => !t.IsMatched))
             {
                 t.IsCorrectMatch = false;
-                t.MatchBorderColor = "#EF4444";
-                t.MatchBgColor = "#FEF2F2";
+                t.ApplyActiveSelection(errorBorder, errorBg);
             }
 
             IsQuizChecked = true;
