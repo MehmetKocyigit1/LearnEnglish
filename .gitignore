@@ -1,0 +1,40 @@
+# .NET Core & Visual Studio
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+build/
+bld/
+
+# Visual Studio files
+.vs/
+*.user
+*.suo
+*.userprefs
+*.sln.docstates
+*.userosscache
+*.rsuser
+
+# MAUI Packages
+AppPackages/
+BundleArtifacts/
+PackageSyndication/
+
+# Development configurations with secrets
+appsettings.Development.json
+appsettings.*.Development.json
+
+# Diagnostic reports & tests
+TestResults/
+*.dlr
+*.dmr
+
+# Backup folders
+.git_backup/
+.git_old/
+
+# OS generated files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,1117 @@
+<!-- IngilizceProje/MAUIClient/Views/TechDictionaryPage.xaml -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:IngilizceProjeMAUI.ViewModels"
+             xmlns:converters="clr-namespace:IngilizceProjeMAUI.Converters"
+             x:Class="IngilizceProjeMAUI.Views.TechDictionaryPage"
+             x:DataType="vm:TechDictionaryViewModel"
+             Title="CS &amp; AI Akademisi"
+             Background="{AppThemeBinding Light={StaticResource LightPageBg}, Dark={StaticResource DarkBgGradient}}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:BoolToValueConverter x:Key="BoolToValueConverter" />
+            <converters:EqualValueConverter x:Key="EqualValueConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <!-- LOADING INDICATOR -->
+        <ActivityIndicator IsRunning="{Binding IsLoading}"
+                           IsVisible="{Binding IsLoading}"
+                           Color="#4F46E5"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           WidthRequest="46"
+                           HeightRequest="46"
+                           ZIndex="10"/>
+
+        <!-- ========================================================================= -->
+        <!-- VIEW 1: CATEGORIES HUB (IsCategorySelected == False)                      -->
+        <!-- ========================================================================= -->
+        <ScrollView IsVisible="{Binding IsCategorySelected, Converter={StaticResource BoolToValueConverter}, ConverterParameter='False|True'}"
+                    Padding="16,14">
+            <VerticalStackLayout Spacing="16">
+
+                <!-- Header Welcome Banner -->
+                <Border Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 16"
+                        BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                        Padding="16,16">
+                    <Border.Shadow>
+                        <Shadow Brush="#000000" Offset="0,3" Radius="8" Opacity="{AppThemeBinding Light=0.05, Dark=0.25}"/>
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="8">
+                        <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
+                            <HorizontalStackLayout Grid.Column="0" Spacing="8" VerticalOptions="Center">
+                                <Label Text="🚀" FontSize="22" VerticalOptions="Center"/>
+                                <Label Text="CS &amp; AI Akademisi"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark=White}"
+                                       VerticalOptions="Center"/>
+                            </HorizontalStackLayout>
+
+                            <Border Grid.Column="1"
+                                    BackgroundColor="{AppThemeBinding Light=#EEF2FF, Dark=#312E81}"
+                                    Stroke="{AppThemeBinding Light=#C7D2FE, Dark=#4F46E5}"
+                                    StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 8"
+                                    Padding="10,4"
+                                    VerticalOptions="Center">
+                                <Label Text="{Binding TotalWordsCount, StringFormat='{0} Terim'}"
+                                       FontSize="12"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#4F46E5, Dark=#C7D2FE}"/>
+                            </Border>
+                        </Grid>
+
+                        <Label Text="Öğrenmek istediğiniz alanı seçin. Her kategoriye özel kolaydan zora kelimeler, detaylı açıklamalar ve sadece o kategoriye özel deneme testleri ile pratik yapın!"
+                               FontSize="13"
+                               TextColor="{AppThemeBinding Light={StaticResource LightTextSecondary}, Dark=#94A3B8}"
+                               LineBreakMode="WordWrap"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- 3 MAIN CATEGORY CARDS -->
+                <CollectionView ItemsSource="{Binding CategoryCards}" SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:CategoryInfoModel">
+                            <Border Margin="0,0,0,14"
+                                    Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                                    StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 18"
+                                    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                                    Padding="18,16">
+                                <Border.Shadow>
+                                    <Shadow Brush="#000000" Offset="0,4" Radius="10" Opacity="{AppThemeBinding Light=0.06, Dark=0.3}"/>
+                                </Border.Shadow>
+
+                                <VerticalStackLayout Spacing="12">
+                                    <!-- Top Row: Icon + Title + Total Count Badge -->
+                                    <Grid ColumnDefinitions="Auto, *, Auto" ColumnSpacing="12" VerticalOptions="Center">
+                                        <!-- Icon Badge -->
+                                        <Border Grid.Column="0"
+                                                BackgroundColor="{AppThemeBinding Light=#F8FAFC, Dark=#0F172A}"
+                                                Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                                                StrokeThickness="1"
+                                                StrokeShape="RoundRectangle 12"
+                                                WidthRequest="50"
+                                                HeightRequest="50"
+                                                HorizontalOptions="Center"
+                                                VerticalOptions="Center">
+                                            <Label Text="{Binding Icon}"
+                                                   FontSize="26"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center"/>
+                                        </Border>
+
+                                        <!-- Title & Subtitle -->
+                                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                            <Label Text="{Binding Title}"
+                                                   FontSize="18"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark=White}"/>
+                                            <Label Text="{Binding Subtitle}"
+                                                   FontSize="12"
+                                                   TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"
+                                                   LineBreakMode="TailTruncation"/>
+                                        </VerticalStackLayout>
+
+                                        <!-- Word Count Badge -->
+                                        <Border Grid.Column="2"
+                                                BackgroundColor="{AppThemeBinding Light=#EEF2FF, Dark=#312E81}"
+                                                Stroke="{AppThemeBinding Light=#C7D2FE, Dark=#4F46E5}"
+                                                StrokeThickness="1"
+                                                StrokeShape="RoundRectangle 8"
+                                                Padding="8,4"
+                                                VerticalOptions="Center">
+                                            <Label Text="{Binding WordCount, StringFormat='{0} Kelime'}"
+                                                   FontSize="11"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{AppThemeBinding Light=#4F46E5, Dark=#C7D2FE}"/>
+                                        </Border>
+                                    </Grid>
+
+                                    <!-- Description -->
+                                    <Label Text="{Binding Description}"
+                                           FontSize="13"
+                                           TextColor="{AppThemeBinding Light={StaticResource LightTextSecondary}, Dark=#CBD5E1}"
+                                           LineBreakMode="WordWrap"/>
+
+                                    <!-- Difficulty Breakdown Badges -->
+                                    <Grid ColumnDefinitions="*, *, *" ColumnSpacing="8">
+                                        <Border Grid.Column="0"
+                                                BackgroundColor="{AppThemeBinding Light=#ECFDF5, Dark=#064E3B}"
+                                                Stroke="{AppThemeBinding Light=#A7F3D0, Dark=#047857}"
+                                                StrokeThickness="1"
+                                                StrokeShape="RoundRectangle 8"
+                                                Padding="6,4">
+                                            <HorizontalStackLayout HorizontalOptions="Center" Spacing="4">
+                                                <Label Text="🟢" FontSize="10"/>
+                                                <Label Text="{Binding EasyCount, StringFormat='Kolay: {0}'}"
+                                                       FontSize="11"
+                                                       FontAttributes="Bold"
+                                                       TextColor="{AppThemeBinding Light=#047857, Dark=#6EE7B7}"/>
+                                            </HorizontalStackLayout>
+                                        </Border>
+
+                                        <Border Grid.Column="1"
+                                                BackgroundColor="{AppThemeBinding Light=#FFFBEB, Dark=#78350F}"
+                                                Stroke="{AppThemeBinding Light=#FDE68A, Dark=#B45309}"
+                                                StrokeThickness="1"
+                                                StrokeShape="RoundRectangle 8"
+                                                Padding="6,4">
+                                            <HorizontalStackLayout HorizontalOptions="Center" Spacing="4">
+                                                <Label Text="🟡" FontSize="10"/>
+                                                <Label Text="{Binding MediumCount, StringFormat='Orta: {0}'}"
+                                                       FontSize="11"
+                                                       FontAttributes="Bold"
+                                                       TextColor="{AppThemeBinding Light=#B45309, Dark=#FDE68A}"/>
+                                            </HorizontalStackLayout>
+                                        </Border>
+
+                                        <Border Grid.Column="2"
+                                                BackgroundColor="{AppThemeBinding Light=#FEF2F2, Dark=#7F1D1D}"
+                                                Stroke="{AppThemeBinding Light=#FECACA, Dark=#B91C1C}"
+                                                StrokeThickness="1"
+                                                StrokeShape="RoundRectangle 8"
+                                                Padding="6,4">
+                                            <HorizontalStackLayout HorizontalOptions="Center" Spacing="4">
+                                                <Label Text="🔴" FontSize="10"/>
+                                                <Label Text="{Binding HardCount, StringFormat='Zor: {0}'}"
+                                                       FontSize="11"
+                                                       FontAttributes="Bold"
+                                                       TextColor="{AppThemeBinding Light=#B91C1C, Dark=#FCA5A5}"/>
+                                            </HorizontalStackLayout>
+                                        </Border>
+                                    </Grid>
+
+                                    <!-- Action Button: Open Category -->
+                                    <Button Text="Kategoriye Gir &amp; Test Çöz ➔"
+                                            BackgroundColor="{AppThemeBinding Light=#4F46E5, Dark=#6366F1}"
+                                            TextColor="White"
+                                            FontSize="13"
+                                            FontAttributes="Bold"
+                                            CornerRadius="10"
+                                            HeightRequest="42"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TechDictionaryViewModel}}, Path=SelectCategoryCommand}"
+                                            CommandParameter="{Binding Key}"/>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+
+        <!-- ========================================================================= -->
+        <!-- VIEW 2: CATEGORY DETAIL & WORKSPACE (IsCategorySelected == True)          -->
+        <!-- ========================================================================= -->
+        <Grid RowDefinitions="Auto, Auto, *"
+              IsVisible="{Binding IsCategorySelected}"
+              Padding="14,10"
+              RowSpacing="10">
+
+            <!-- TOP BAR: Back Button + Category Header -->
+            <Border Grid.Row="0"
+                    Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 14"
+                    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                    Padding="12,10">
+                <Grid ColumnDefinitions="Auto, *, Auto" ColumnSpacing="10" VerticalOptions="Center">
+                    <!-- Back Button -->
+                    <Button Grid.Column="0"
+                            Text="← Kategoriler"
+                            BackgroundColor="{AppThemeBinding Light=#F1F5F9, Dark=#334155}"
+                            TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark=White}"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            CornerRadius="8"
+                            HeightRequest="36"
+                            Padding="10,0"
+                            VerticalOptions="Center"
+                            Command="{Binding BackToCategoriesCommand}"/>
+
+                    <!-- Current Category Title -->
+                    <HorizontalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="6">
+                        <Label Text="{Binding SelectedCategoryInfo.Icon}" FontSize="18" VerticalOptions="Center"/>
+                        <Label Text="{Binding SelectedCategoryInfo.Title}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark=White}"
+                               VerticalOptions="Center"
+                               LineBreakMode="TailTruncation"/>
+                    </HorizontalStackLayout>
+
+                    <!-- Word Count Badge -->
+                    <Border Grid.Column="2"
+                            BackgroundColor="{AppThemeBinding Light=#EEF2FF, Dark=#312E81}"
+                            Stroke="{AppThemeBinding Light=#C7D2FE, Dark=#4F46E5}"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 8"
+                            Padding="8,4"
+                            VerticalOptions="Center">
+                        <Label Text="{Binding CategoryWordsCount, StringFormat='{0} Terim'}"
+                               FontSize="11"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=#4F46E5, Dark=#C7D2FE}"/>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- SUB-TABS: Words | Test | Quiz | Flashcards -->
+            <Grid Grid.Row="1" ColumnDefinitions="*, *, *, *" ColumnSpacing="6">
+                <!-- Words Tab Button -->
+                <Button Grid.Column="0"
+                        Text="📖 Kelimeler"
+                        FontSize="12"
+                        FontAttributes="Bold"
+                        CornerRadius="10"
+                        HeightRequest="40"
+                        Padding="4,0"
+                        BackgroundColor="{Binding ActiveSubTab, Converter={StaticResource EqualValueConverter}, ConverterParameter='Words:#4F46E5|#F1F5F9'}"
+                        TextColor="{Binding ActiveSubTab, Converter={StaticResource EqualValueConverter}, ConverterParameter='Words:White|#475569'}"
+                        Command="{Binding SwitchSubTabCommand}"
+                        CommandParameter="Words"/>
+
+                <!-- Test Tab Button -->
+                <Button Grid.Column="1"
+                        Text="📝 Deneme Testi"
+                        FontSize="12"
+                        FontAttributes="Bold"
+                        CornerRadius="10"
+                        HeightRequest="40"
+                        Padding="4,0"
+                        BackgroundColor="{Binding ActiveSubTab, Converter={StaticResource EqualValueConverter}, ConverterParameter='Test:#4F46E5|#F1F5F9'}"
+                        TextColor="{Binding ActiveSubTab, Converter={StaticResource EqualValueConverter}, ConverterParameter='Test:White|#475569'}"
+                        Command="{Binding SwitchSubTabCommand}"
+                        CommandParameter="Test"/>
+
+                <!-- Quiz Tab Button -->
+                <Button Grid.Column="2"
+                        Text="🎯 Eşleştirme"
+                        FontSize="12"
+                        FontAttributes="Bold"
+                        CornerRadius="10"
+                        HeightRequest="40"
+                        Padding="4,0"
+                        BackgroundColor="{Binding ActiveSubTab, Converter={StaticResource EqualValueConverter}, ConverterParameter='Quiz:#4F46E5|#F1F5F9'}"
+                        TextColor="{Binding ActiveSubTab, Converter={StaticResource EqualValueConverter}, ConverterParameter='Quiz:White|#475569'}"
+                        Command="{Binding SwitchSubTabCommand}"
+                        CommandParameter="Quiz"/>
+
+                <!-- Flashcard Tab Button -->
+                <Button Grid.Column="3"
+                        Text="⚡ Kartlar"
+                        FontSize="12"
+                        FontAttributes="Bold"
+                        CornerRadius="10"
+                        HeightRequest="40"
+                        Padding="4,0"
+                        BackgroundColor="{Binding ActiveSubTab, Converter={StaticResource EqualValueConverter}, ConverterParameter='Flashcard:#4F46E5|#F1F5F9'}"
+                        TextColor="{Binding ActiveSubTab, Converter={StaticResource EqualValueConverter}, ConverterParameter='Flashcard:White|#475569'}"
+                        Command="{Binding SwitchSubTabCommand}"
+                        CommandParameter="Flashcard"/>
+            </Grid>
+
+            <!-- ================================================================= -->
+            <!-- SUB-VIEW A: WORDS LIST (Kolaydan Zora Sıralı)                      -->
+            <!-- ================================================================= -->
+            <Grid Grid.Row="2"
+                  RowDefinitions="Auto, Auto, *"
+                  RowSpacing="8"
+                  IsVisible="{Binding ActiveSubTab, Converter={StaticResource EqualValueConverter}, ConverterParameter='Words'}">
+
+                <!-- Search Bar -->
+                <Border Grid.Row="0"
+                        Stroke="{AppThemeBinding Light=#CBD5E1, Dark=#334155}"
+                        StrokeShape="RoundRectangle 12"
+                        StrokeThickness="1"
+                        BackgroundColor="{AppThemeBinding Light=#F8FAFC, Dark=#1E293B}"
+                        HeightRequest="44"
+                        Padding="6,0">
+                    <SearchBar Text="{Binding SearchQuery}"
+                               Placeholder="Terim, Türkçe anlam veya açıklama ara..."
+                               TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark=White}"
+                               PlaceholderColor="{AppThemeBinding Light=#94A3B8, Dark=#64748B}"
+                               BackgroundColor="Transparent"
+                               Margin="0"/>
+                </Border>
+
+                <!-- Difficulty Sorting & Filter Pills -->
+                <Grid Grid.Row="1" ColumnDefinitions="Auto, *, Auto, Auto, Auto, Auto" ColumnSpacing="6" VerticalOptions="Center">
+                    <Label Grid.Column="0"
+                           Text="Zorluk:"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light={StaticResource LightTextSecondary}, Dark=#94A3B8}"
+                           VerticalOptions="Center"/>
+
+                    <!-- Tümü -->
+                    <Button Grid.Column="2"
+                            Text="Tümü"
+                            FontSize="11"
+                            FontAttributes="Bold"
+                            CornerRadius="8"
+                            HeightRequest="30"
+                            Padding="8,0"
+                            BackgroundColor="{Binding SelectedDifficulty, Converter={StaticResource EqualValueConverter}, ConverterParameter='Tümü:#4F46E5|#E2E8F0'}"
+                            TextColor="{Binding SelectedDifficulty, Converter={StaticResource EqualValueConverter}, ConverterParameter='Tümü:White|#475569'}"
+                            Command="{Binding SetDifficultyFilterCommand}"
+                            CommandParameter="Tümü"/>
+
+                    <!-- Kolay -->
+                    <Button Grid.Column="3"
+                            Text="🟢 Kolay"
+                            FontSize="11"
+                            FontAttributes="Bold"
+                            CornerRadius="8"
+                            HeightRequest="30"
+                            Padding="8,0"
+                            BackgroundColor="{Binding SelectedDifficulty, Converter={StaticResource EqualValueConverter}, ConverterParameter='Kolay:#10B981|#ECFDF5'}"
+                            TextColor="{Binding SelectedDifficulty, Converter={StaticResource EqualValueConverter}, ConverterParameter='Kolay:White|#047857'}"
+                            Command="{Binding SetDifficultyFilterCommand}"
+                            CommandParameter="Kolay"/>
+
+                    <!-- Orta -->
+                    <Button Grid.Column="4"
+                            Text="🟡 Orta"
+                            FontSize="11"
+                            FontAttributes="Bold"
+                            CornerRadius="8"
+                            HeightRequest="30"
+                            Padding="8,0"
+                            BackgroundColor="{Binding SelectedDifficulty, Converter={StaticResource EqualValueConverter}, ConverterParameter='Orta:#F59E0B|#FFFBEB'}"
+                            TextColor="{Binding SelectedDifficulty, Converter={StaticResource EqualValueConverter}, ConverterParameter='Orta:White|#B45309'}"
+                            Command="{Binding SetDifficultyFilterCommand}"
+                            CommandParameter="Orta"/>
+
+                    <!-- Zor -->
+                    <Button Grid.Column="5"
+                            Text="🔴 Zor"
+                            FontSize="11"
+                            FontAttributes="Bold"
+                            CornerRadius="8"
+                            HeightRequest="30"
+                            Padding="8,0"
+                            BackgroundColor="{Binding SelectedDifficulty, Converter={StaticResource EqualValueConverter}, ConverterParameter='Zor:#EF4444|#FEF2F2'}"
+                            TextColor="{Binding SelectedDifficulty, Converter={StaticResource EqualValueConverter}, ConverterParameter='Zor:White|#B91C1C'}"
+                            Command="{Binding SetDifficultyFilterCommand}"
+                            CommandParameter="Zor"/>
+                </Grid>
+
+                <!-- Words CollectionView -->
+                <CollectionView Grid.Row="2"
+                                ItemsSource="{Binding FilteredWords}"
+                                SelectionMode="None">
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="8" Padding="30">
+                            <Label Text="🔍 Terim Bulunamadı"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark=White}"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Seçilen zorluk seviyesine veya arama kriterinize uygun terim bulunamadı."
+                                   FontSize="13"
+                                   TextColor="{AppThemeBinding Light={StaticResource LightTextSecondary}, Dark=#94A3B8}"
+                                   HorizontalOptions="Center"
+                                   HorizontalTextAlignment="Center"/>
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:TechWordItem">
+                            <Border Margin="0,5,0,5"
+                                    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                                    Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                                    StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 14"
+                                    Padding="14,12">
+                                <Border.Shadow>
+                                    <Shadow Brush="#000000" Offset="0,2" Radius="6" Opacity="{AppThemeBinding Light=0.03, Dark=0.2}"/>
+                                </Border.Shadow>
+
+                                <VerticalStackLayout Spacing="8">
+                                    <!-- Top Row: English Term + Difficulty Badge + Toggle Button -->
+                                    <Grid ColumnDefinitions="*, Auto, Auto" ColumnSpacing="8" VerticalOptions="Center">
+                                        <!-- English Term -->
+                                        <Label Grid.Column="0"
+                                               Text="{Binding English}"
+                                               FontSize="17"
+                                               FontAttributes="Bold"
+                                               TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark=White}"
+                                               VerticalOptions="Center"/>
+
+                                        <!-- Difficulty Badge -->
+                                        <Border Grid.Column="1"
+                                                BackgroundColor="{Binding DifficultyBadgeBg}"
+                                                Stroke="{Binding DifficultyColor}"
+                                                StrokeThickness="1"
+                                                StrokeShape="RoundRectangle 6"
+                                                Padding="6,2"
+                                                VerticalOptions="Center">
+                                            <Label Text="{Binding DifficultyBadgeText}"
+                                                   FontSize="11"
+                                                   TextColor="{Binding DifficultyColor}"
+                                                   FontAttributes="Bold"/>
+                                        </Border>
+
+                                        <!-- Add to My Words Toggle Button -->
+                                        <Button Grid.Column="2"
+                                                Text="{Binding IsAdded, Converter={StaticResource BoolToValueConverter}, ConverterParameter='Listede ✕|+ Listeme Ekle'}"
+                                                BackgroundColor="{Binding IsAdded, Converter={StaticResource BoolToValueConverter}, ConverterParameter='#DC2626|#4F46E5'}"
+                                                TextColor="White"
+                                                FontSize="11"
+                                                FontAttributes="Bold"
+                                                CornerRadius="8"
+                                                HeightRequest="30"
+                                                Padding="8,0"
+                                                VerticalOptions="Center"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TechDictionaryViewModel}}, Path=ToggleWordCommand}"
+                                                CommandParameter="{Binding .}"/>
+                                    </Grid>
+
+                                    <!-- Middle: Turkish Meaning -->
+                                    <Label Text="{Binding Turkish}"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="{AppThemeBinding Light=#2563EB, Dark=#60A5FA}"/>
+
+                                    <!-- Detailed Explanation Box -->
+                                    <Border BackgroundColor="{AppThemeBinding Light=#F8FAFC, Dark=#0F172A}"
+                                            Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                                            StrokeThickness="1"
+                                            StrokeShape="RoundRectangle 8"
+                                            Padding="10,8">
+                                        <VerticalStackLayout Spacing="4">
+                                            <HorizontalStackLayout Spacing="4">
+                                                <Label Text="💡 Açıklama:"
+                                                       FontSize="12"
+                                                       FontAttributes="Bold"
+                                                       TextColor="{AppThemeBinding Light=#475569, Dark=#CBD5E1}"/>
+                                            </HorizontalStackLayout>
+                                            <Label Text="{Binding Explanation}"
+                                                   FontSize="12"
+                                                   TextColor="{AppThemeBinding Light=#334155, Dark=#E2E8F0}"
+                                                   LineBreakMode="WordWrap"/>
+                                        </VerticalStackLayout>
+                                    </Border>
+
+                                    <!-- Context Example Sentence Box -->
+                                    <Border BackgroundColor="{AppThemeBinding Light=#F1F5F9, Dark=#1E293B}"
+                                            Stroke="{AppThemeBinding Light=#CBD5E1, Dark=#475569}"
+                                            StrokeThickness="1"
+                                            StrokeShape="RoundRectangle 8"
+                                            Padding="10,6">
+                                        <VerticalStackLayout Spacing="2">
+                                            <Label Text="{Binding Sentence, StringFormat='🇬🇧 Örnek: {0}'}"
+                                                   FontSize="12"
+                                                   FontAttributes="Italic"
+                                                   TextColor="{AppThemeBinding Light=#475569, Dark=#94A3B8}"
+                                                   LineBreakMode="WordWrap"/>
+                                            <Label Text="{Binding SentenceTurkish, StringFormat='🇹🇷 Çeviri: {0}'}"
+                                                   FontSize="11"
+                                                   TextColor="{AppThemeBinding Light=#64748B, Dark=#CBD5E1}"
+                                                   IsVisible="{Binding SentenceTurkish, Converter={StaticResource BoolToValueConverter}, ConverterParameter='True|False'}"
+                                                   LineBreakMode="WordWrap"/>
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+
+
+            <!-- ================================================================= -->
+            <!-- SUB-VIEW B: CATEGORY MULTIPLE-CHOICE TEST (DENEME)                -->
+            <!-- ================================================================= -->
+            <ScrollView Grid.Row="2"
+                        IsVisible="{Binding ActiveSubTab, Converter={StaticResource EqualValueConverter}, ConverterParameter='Test'}"
+                        Padding="0,4">
+                <VerticalStackLayout Spacing="14">
+
+                    <!-- If Test is In Progress -->
+                    <VerticalStackLayout Spacing="14"
+                                         IsVisible="{Binding IsTestCompleted, Converter={StaticResource BoolToValueConverter}, ConverterParameter='False|True'}">
+
+                        <!-- Progress Bar & Score Status -->
+                        <Border Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                                Padding="14,10">
+                            <VerticalStackLayout Spacing="6">
+                                <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
+                                    <Label Grid.Column="0"
+                                           Text="{Binding CurrentQuestionNumber, StringFormat='Soru {0} / 10'}"
+                                           FontSize="13"
+                                           FontAttributes="Bold"
+                                           TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark=White}"/>
+
+                                    <HorizontalStackLayout Grid.Column="1" Spacing="8">
+                                        <Label Text="{Binding CorrectCount, StringFormat='🟢 {0}'}"
+                                               FontSize="12"
+                                               FontAttributes="Bold"
+                                               TextColor="#16A34A"/>
+                                        <Label Text="{Binding WrongCount, StringFormat='🔴 {0}'}"
+                                               FontSize="12"
+                                               FontAttributes="Bold"
+                                               TextColor="#DC2626"/>
+                                    </HorizontalStackLayout>
+                                </Grid>
+
+                                <ProgressBar Progress="{Binding TestProgress}"
+                                             ProgressColor="#4F46E5"
+                                             HeightRequest="8"/>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- Question Card -->
+                        <Border Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 16"
+                                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                                Padding="16,16">
+                            <Border.Shadow>
+                                <Shadow Brush="#000000" Offset="0,3" Radius="8" Opacity="{AppThemeBinding Light=0.04, Dark=0.2}"/>
+                            </Border.Shadow>
+
+                            <VerticalStackLayout Spacing="14">
+                                <!-- Question Difficulty & Category -->
+                                <HorizontalStackLayout Spacing="8">
+                                    <Border BackgroundColor="#EEF2FF"
+                                            Stroke="#C7D2FE"
+                                            StrokeThickness="1"
+                                            StrokeShape="RoundRectangle 6"
+                                            Padding="6,2">
+                                        <Label Text="{Binding SelectedCategoryInfo.Title}"
+                                               FontSize="11"
+                                               FontAttributes="Bold"
+                                               TextColor="#4F46E5"/>
+                                    </Border>
+                                    <Border BackgroundColor="#F1F5F9"
+                                            Stroke="#CBD5E1"
+                                            StrokeThickness="1"
+                                            StrokeShape="RoundRectangle 6"
+                                            Padding="6,2">
+                                        <Label Text="{Binding CurrentQuestion.Difficulty, StringFormat='Seviye: {0}'}"
+                                               FontSize="11"
+                                               TextColor="#475569"/>
+                                    </Border>
+                                </HorizontalStackLayout>
+
+                                <!-- Question Text -->
+                                <Label Text="{Binding CurrentQuestion.QuestionText}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark=White}"
+                                       LineBreakMode="WordWrap"/>
+
+                                <!-- 4 Options -->
+                                <VerticalStackLayout Spacing="8">
+                                    <!-- Option A -->
+                                    <Border BackgroundColor="{Binding OptionAColor}"
+                                            Stroke="{Binding OptionABorderColor}"
+                                            StrokeThickness="1.5"
+                                            StrokeShape="RoundRectangle 10"
+                                            Padding="12,10">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding AnswerOptionCommand}">
+                                                <TapGestureRecognizer.CommandParameter>
+                                                    <x:Int32>0</x:Int32>
+                                                </TapGestureRecognizer.CommandParameter>
+                                            </TapGestureRecognizer>
+                                        </Border.GestureRecognizers>
+                                        <Grid ColumnDefinitions="Auto, *">
+                                            <Label Grid.Column="0" Text="A) " FontAttributes="Bold" TextColor="#4F46E5" Margin="0,0,6,0"/>
+                                            <Label Grid.Column="1" Text="{Binding CurrentQuestion.Options[0]}" FontSize="13" TextColor="#334155" LineBreakMode="WordWrap"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- Option B -->
+                                    <Border BackgroundColor="{Binding OptionBColor}"
+                                            Stroke="{Binding OptionBBorderColor}"
+                                            StrokeThickness="1.5"
+                                            StrokeShape="RoundRectangle 10"
+                                            Padding="12,10">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding AnswerOptionCommand}">
+                                                <TapGestureRecognizer.CommandParameter>
+                                                    <x:Int32>1</x:Int32>
+                                                </TapGestureRecognizer.CommandParameter>
+                                            </TapGestureRecognizer>
+                                        </Border.GestureRecognizers>
+                                        <Grid ColumnDefinitions="Auto, *">
+                                            <Label Grid.Column="0" Text="B) " FontAttributes="Bold" TextColor="#4F46E5" Margin="0,0,6,0"/>
+                                            <Label Grid.Column="1" Text="{Binding CurrentQuestion.Options[1]}" FontSize="13" TextColor="#334155" LineBreakMode="WordWrap"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- Option C -->
+                                    <Border BackgroundColor="{Binding OptionCColor}"
+                                            Stroke="{Binding OptionCBorderColor}"
+                                            StrokeThickness="1.5"
+                                            StrokeShape="RoundRectangle 10"
+                                            Padding="12,10">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding AnswerOptionCommand}">
+                                                <TapGestureRecognizer.CommandParameter>
+                                                    <x:Int32>2</x:Int32>
+                                                </TapGestureRecognizer.CommandParameter>
+                                            </TapGestureRecognizer>
+                                        </Border.GestureRecognizers>
+                                        <Grid ColumnDefinitions="Auto, *">
+                                            <Label Grid.Column="0" Text="C) " FontAttributes="Bold" TextColor="#4F46E5" Margin="0,0,6,0"/>
+                                            <Label Grid.Column="1" Text="{Binding CurrentQuestion.Options[2]}" FontSize="13" TextColor="#334155" LineBreakMode="WordWrap"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- Option D -->
+                                    <Border BackgroundColor="{Binding OptionDColor}"
+                                            Stroke="{Binding OptionDBorderColor}"
+                                            StrokeThickness="1.5"
+                                            StrokeShape="RoundRectangle 10"
+                                            Padding="12,10">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding AnswerOptionCommand}">
+                                                <TapGestureRecognizer.CommandParameter>
+                                                    <x:Int32>3</x:Int32>
+                                                </TapGestureRecognizer.CommandParameter>
+                                            </TapGestureRecognizer>
+                                        </Border.GestureRecognizers>
+                                        <Grid ColumnDefinitions="Auto, *">
+                                            <Label Grid.Column="0" Text="D) " FontAttributes="Bold" TextColor="#4F46E5" Margin="0,0,6,0"/>
+                                            <Label Grid.Column="1" Text="{Binding CurrentQuestion.Options[3]}" FontSize="13" TextColor="#334155" LineBreakMode="WordWrap"/>
+                                        </Grid>
+                                    </Border>
+                                </VerticalStackLayout>
+
+                                <!-- Explanation Box (Visible after answer) -->
+                                <Border BackgroundColor="#F8FAFC"
+                                        Stroke="#CBD5E1"
+                                        StrokeThickness="1"
+                                        StrokeShape="RoundRectangle 10"
+                                        Padding="12,10"
+                                        IsVisible="{Binding CurrentQuestion.IsAnswered}">
+                                    <VerticalStackLayout Spacing="6">
+                                        <Label Text="{Binding CurrentQuestion.Explanation}"
+                                               FontSize="13"
+                                               FontAttributes="Bold"
+                                               TextColor="#334155"
+                                               LineBreakMode="WordWrap"/>
+                                        <Label Text="{Binding CurrentQuestion.ExampleSentence, StringFormat='🇬🇧 Örnek Cümle: {0}'}"
+                                               FontSize="12"
+                                               FontAttributes="Italic"
+                                               TextColor="#64748B"
+                                               LineBreakMode="WordWrap"/>
+                                    </VerticalStackLayout>
+                                </Border>
+
+                                <!-- Next Question Button -->
+                                <Button Text="Sonraki Soru ➔"
+                                        BackgroundColor="#4F46E5"
+                                        TextColor="White"
+                                        FontSize="13"
+                                        FontAttributes="Bold"
+                                        CornerRadius="10"
+                                        HeightRequest="42"
+                                        IsVisible="{Binding CurrentQuestion.IsAnswered}"
+                                        Command="{Binding NextQuestionCommand}"/>
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Test Completed Score Summary Screen -->
+                    <Border Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 18"
+                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                            Padding="20,24"
+                            IsVisible="{Binding IsTestCompleted}">
+                        <Border.Shadow>
+                            <Shadow Brush="#000000" Offset="0,4" Radius="12" Opacity="{AppThemeBinding Light=0.06, Dark=0.3}"/>
+                        </Border.Shadow>
+                        <VerticalStackLayout Spacing="16" HorizontalOptions="Center">
+                            <Label Text="🏆" FontSize="50" HorizontalOptions="Center"/>
+                            <Label Text="Deneme Testi Tamamlandı!"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark=White}"
+                                   HorizontalOptions="Center"/>
+
+                            <Border BackgroundColor="#EEF2FF"
+                                    Stroke="#C7D2FE"
+                                    StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 12"
+                                    Padding="16,10"
+                                    HorizontalOptions="Center">
+                                <Label Text="{Binding ScorePercentage, StringFormat='Başarı: %{0}'}"
+                                       FontSize="22"
+                                       FontAttributes="Bold"
+                                       TextColor="#4F46E5"
+                                       HorizontalOptions="Center"/>
+                            </Border>
+
+                            <HorizontalStackLayout Spacing="16" HorizontalOptions="Center">
+                                <Label Text="{Binding CorrectCount, StringFormat='Doğru: {0}'}"
+                                       FontSize="14"
+                                       FontAttributes="Bold"
+                                       TextColor="#16A34A"/>
+                                <Label Text="{Binding WrongCount, StringFormat='Yanlış: {0}'}"
+                                       FontSize="14"
+                                       FontAttributes="Bold"
+                                       TextColor="#DC2626"/>
+                            </HorizontalStackLayout>
+
+                            <Label Text="{Binding TestResultMessage}"
+                                   FontSize="13"
+                                   TextColor="{AppThemeBinding Light={StaticResource LightTextSecondary}, Dark=#94A3B8}"
+                                   HorizontalTextAlignment="Center"
+                                   LineBreakMode="WordWrap"/>
+
+                            <Grid ColumnDefinitions="*, *" ColumnSpacing="10" Margin="0,10,0,0">
+                                <Button Grid.Column="0"
+                                        Text="Tekrar Çöz 🔄"
+                                        BackgroundColor="#4F46E5"
+                                        TextColor="White"
+                                        FontSize="13"
+                                        FontAttributes="Bold"
+                                        CornerRadius="10"
+                                        HeightRequest="42"
+                                        Command="{Binding StartNewTestCommand}"/>
+
+                                <Button Grid.Column="1"
+                                        Text="Kelimeleri Oku 📖"
+                                        BackgroundColor="#F1F5F9"
+                                        TextColor="#334155"
+                                        FontSize="13"
+                                        FontAttributes="Bold"
+                                        CornerRadius="10"
+                                        HeightRequest="42"
+                                        Command="{Binding SwitchSubTabCommand}"
+                                        CommandParameter="Words"/>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+
+                </VerticalStackLayout>
+            </ScrollView>
+
+
+            <!-- ================================================================= -->
+            <!-- SUB-VIEW C: CATEGORY MATCHING QUIZ                                -->
+            <!-- ================================================================= -->
+            <ScrollView Grid.Row="2"
+                        IsVisible="{Binding ActiveSubTab, Converter={StaticResource EqualValueConverter}, ConverterParameter='Quiz'}"
+                        Padding="0,4">
+                <VerticalStackLayout Spacing="14">
+
+                    <!-- Header Instructions -->
+                    <Border Stroke="{AppThemeBinding Light=#C7D2FE, Dark=#3730A3}"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 12"
+                            BackgroundColor="{AppThemeBinding Light=#EEF2FF, Dark=#1E1B4B}"
+                            Padding="14,12">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="🎯 Terim ve Anlam Eşleştirme Oyunu"
+                                   FontSize="15"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light=#4338CA, Dark=#A5B4FC}"/>
+                            <Label Text="Önce İngilizce terime, sonra sağdaki Türkçe anlamına dokunarak eşleştirin."
+                                   FontSize="12"
+                                   TextColor="{AppThemeBinding Light={StaticResource LightTextSecondary}, Dark=#94A3B8}"/>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Two-Column Matching Board (Duolingo Style) -->
+                    <Grid ColumnDefinitions="*, *" ColumnSpacing="12">
+                        <!-- Left Column: English Terms -->
+                        <VerticalStackLayout Grid.Column="0" Spacing="10" BindableLayout.ItemsSource="{Binding QuizItems}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="vm:CategoryQuizItem">
+                                    <Border StrokeThickness="2"
+                                            StrokeShape="RoundRectangle 12"
+                                            Padding="12,12"
+                                            Stroke="{Binding MatchBorderColor}"
+                                            BackgroundColor="{Binding MatchBgColor}">
+                                        <Border.Shadow>
+                                            <Shadow Brush="#000000" Offset="0,2" Radius="4" Opacity="0.05"/>
+                                        </Border.Shadow>
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TechDictionaryViewModel}}, Path=SelectEnglishWordCommand}"
+                                                                  CommandParameter="{Binding .}"/>
+                                        </Border.GestureRecognizers>
+
+                                        <VerticalStackLayout Spacing="6" VerticalOptions="Center">
+                                            <Label Text="{Binding English}"
+                                                   FontSize="15"
+                                                   FontFamily="PoppinsBold"
+                                                   TextColor="#0F172A"
+                                                   HorizontalOptions="Start"/>
+
+                                            <!-- Matched Meaning inside Card with unified pair color pill -->
+                                            <Border IsVisible="{Binding IsSelected}"
+                                                    StrokeShape="RoundRectangle 8"
+                                                    StrokeThickness="0"
+                                                    BackgroundColor="{Binding MatchBadgeBgColor}"
+                                                    Padding="8,4"
+                                                    HorizontalOptions="Start">
+                                                <HorizontalStackLayout Spacing="5" VerticalOptions="Center">
+                                                    <Label Text="{Binding PairBadgeText}"
+                                                           FontSize="11"
+                                                           FontFamily="PoppinsBold"
+                                                           TextColor="{Binding MatchTextColor}"/>
+                                                    <Label Text="{Binding SelectedMeaning, StringFormat='➜ {0}'}"
+                                                           FontSize="11"
+                                                           FontFamily="PoppinsSemiBold"
+                                                           TextColor="{Binding MatchTextColor}"
+                                                           LineBreakMode="TailTruncation"/>
+                                                </HorizontalStackLayout>
+                                            </Border>
+
+                                            <!-- Correction if Wrong -->
+                                            <Label Text="{Binding CorrectMeaning, StringFormat='Doğrusu: {0}'}"
+                                                   FontSize="11"
+                                                   FontFamily="PoppinsBold"
+                                                   TextColor="#EF4444"
+                                                   IsVisible="False">
+                                                <Label.Triggers>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding IsCorrectMatch}" Value="False">
+                                                        <Setter Property="IsVisible" Value="True"/>
+                                                    </DataTrigger>
+                                                </Label.Triggers>
+                                            </Label>
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+
+                        <!-- Right Column: Turkish Meanings -->
+                        <VerticalStackLayout Grid.Column="1" Spacing="10" BindableLayout.ItemsSource="{Binding TurkishOptions}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="vm:QuizTurkishOptionItem">
+                                    <Border StrokeThickness="2"
+                                            StrokeShape="RoundRectangle 12"
+                                            Padding="12,12"
+                                            Stroke="{Binding MatchBorderColor}"
+                                            BackgroundColor="{Binding MatchBgColor}">
+                                        <Border.Shadow>
+                                            <Shadow Brush="#000000" Offset="0,2" Radius="4" Opacity="0.05"/>
+                                        </Border.Shadow>
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TechDictionaryViewModel}}, Path=SelectTurkishOptionCommand}"
+                                                                  CommandParameter="{Binding .}"/>
+                                        </Border.GestureRecognizers>
+
+                                        <VerticalStackLayout Spacing="6" VerticalOptions="Center">
+                                            <Label Text="{Binding Text}"
+                                                   FontSize="14"
+                                                   FontFamily="PoppinsBold"
+                                                   TextColor="#0F172A"
+                                                   LineBreakMode="WordWrap"
+                                                   HorizontalOptions="Start"/>
+
+                                            <!-- Linked English Word with unified pair color pill -->
+                                            <Border IsVisible="{Binding IsMatched}"
+                                                    StrokeShape="RoundRectangle 8"
+                                                    StrokeThickness="0"
+                                                    BackgroundColor="{Binding MatchBadgeBgColor}"
+                                                    Padding="8,4"
+                                                    HorizontalOptions="Start">
+                                                <HorizontalStackLayout Spacing="5" VerticalOptions="Center">
+                                                    <Label Text="{Binding PairBadgeText}"
+                                                           FontSize="11"
+                                                           FontFamily="PoppinsBold"
+                                                           TextColor="{Binding MatchTextColor}"/>
+                                                    <Label Text="{Binding MatchedEnglishWord, StringFormat='✓ {0}'}"
+                                                           FontSize="11"
+                                                           FontFamily="PoppinsSemiBold"
+                                                           TextColor="{Binding MatchTextColor}"
+                                                           LineBreakMode="TailTruncation"/>
+                                                </HorizontalStackLayout>
+                                            </Border>
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <!-- Feedback Message -->
+                    <Label Text="{Binding QuizFeedbackMessage}"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="{Binding IsQuizSuccess, Converter={StaticResource BoolToValueConverter}, ConverterParameter='#16A34A|#DC2626'}"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           IsVisible="{Binding IsQuizChecked}"/>
+
+                    <!-- Quiz Action Buttons -->
+                    <Grid ColumnDefinitions="*, *" ColumnSpacing="10">
+                        <Button Grid.Column="0"
+                                Text="Eşleştirmeleri Kontrol Et ✓"
+                                BackgroundColor="#10B981"
+                                TextColor="White"
+                                FontSize="13"
+                                FontAttributes="Bold"
+                                CornerRadius="10"
+                                HeightRequest="44"
+                                Command="{Binding CheckQuizMatchingCommand}"/>
+
+                        <Button Grid.Column="1"
+                                Text="Yeni Quiz Başlat 🔄"
+                                BackgroundColor="#4F46E5"
+                                TextColor="White"
+                                FontSize="13"
+                                FontAttributes="Bold"
+                                CornerRadius="10"
+                                HeightRequest="44"
+                                Command="{Binding StartNewQuizCommand}"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </ScrollView>
+
+
+            <!-- ================================================================= -->
+            <!-- SUB-VIEW D: CATEGORY FLASHCARDS                                   -->
+            <!-- ================================================================= -->
+            <ScrollView Grid.Row="2"
+                        IsVisible="{Binding ActiveSubTab, Converter={StaticResource EqualValueConverter}, ConverterParameter='Flashcard'}"
+                        Padding="0,4">
+                <VerticalStackLayout Spacing="16">
+
+                    <!-- Flashcard Card Container -->
+                    <Border Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 20"
+                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                            HeightRequest="280"
+                            Padding="20,20">
+                        <Border.Shadow>
+                            <Shadow Brush="#000000" Offset="0,4" Radius="12" Opacity="{AppThemeBinding Light=0.08, Dark=0.3}"/>
+                        </Border.Shadow>
+
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding FlipFlashcardCommand}"/>
+                        </Border.GestureRecognizers>
+
+                        <Grid>
+                            <!-- FRONT OF CARD (IsCardFlipped == False) -->
+                            <VerticalStackLayout Spacing="16"
+                                                 VerticalOptions="Center"
+                                                 HorizontalOptions="Center"
+                                                 IsVisible="{Binding IsCardFlipped, Converter={StaticResource BoolToValueConverter}, ConverterParameter='False|True'}">
+
+                                <Border BackgroundColor="{Binding CurrentFlashcard.DifficultyBadgeBg}"
+                                        Stroke="{Binding CurrentFlashcard.DifficultyColor}"
+                                        StrokeThickness="1"
+                                        StrokeShape="RoundRectangle 8"
+                                        Padding="8,4"
+                                        HorizontalOptions="Center">
+                                    <Label Text="{Binding CurrentFlashcard.DifficultyBadgeText}"
+                                           FontSize="12"
+                                           FontAttributes="Bold"
+                                           TextColor="{Binding CurrentFlashcard.DifficultyColor}"/>
+                                </Border>
+
+                                <Label Text="{Binding CurrentFlashcard.English}"
+                                       FontSize="24"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark=White}"
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center"/>
+
+                                <Label Text="Çevirmek ve anlamı görmek için karta dokunun 🔄"
+                                       FontSize="12"
+                                       TextColor="#94A3B8"
+                                       HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+
+                            <!-- BACK OF CARD (IsCardFlipped == True) -->
+                            <VerticalStackLayout Spacing="10"
+                                                 VerticalOptions="Center"
+                                                 HorizontalOptions="Center"
+                                                 IsVisible="{Binding IsCardFlipped}">
+
+                                <Label Text="{Binding CurrentFlashcard.Turkish}"
+                                       FontSize="20"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#2563EB, Dark=#60A5FA}"
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center"/>
+
+                                <Label Text="{Binding CurrentFlashcard.Explanation}"
+                                       FontSize="13"
+                                       TextColor="{AppThemeBinding Light=#334155, Dark=#E2E8F0}"
+                                       HorizontalTextAlignment="Center"
+                                       LineBreakMode="WordWrap"/>
+
+                                <Border BackgroundColor="{AppThemeBinding Light=#F8FAFC, Dark=#0F172A}"
+                                        Stroke="{AppThemeBinding Light=#CBD5E1, Dark=#475569}"
+                                        StrokeThickness="1"
+                                        StrokeShape="RoundRectangle 8"
+                                        Padding="10,6"
+                                        Margin="0,4,0,0">
+                                    <Label Text="{Binding CurrentFlashcard.Sentence, StringFormat='🇬🇧 {0}'}"
+                                           FontSize="11"
+                                           FontAttributes="Italic"
+                                           TextColor="#64748B"
+                                           LineBreakMode="WordWrap"/>
+                                </Border>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+
+                    <!-- Flashcard Navigation Controls -->
+                    <Grid ColumnDefinitions="*, Auto, *" ColumnSpacing="12" VerticalOptions="Center">
+                        <Button Grid.Column="0"
+                                Text="← Önceki"
+                                BackgroundColor="#F1F5F9"
+                                TextColor="#334155"
+                                FontSize="13"
+                                FontAttributes="Bold"
+                                CornerRadius="10"
+                                HeightRequest="42"
+                                Command="{Binding PreviousFlashcardCommand}"/>
+
+                        <Label Grid.Column="1"
+                               Text="{Binding FlashcardIndex, StringFormat='Kart {0}'}"
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light={StaticResource LightTextSecondary}, Dark=#94A3B8}"
+                               VerticalOptions="Center"/>
+
+                        <Button Grid.Column="2"
+                                Text="Sonraki →"
+                                BackgroundColor="#4F46E5"
+                                TextColor="White"
+                                FontSize="13"
+                                FontAttributes="Bold"
+                                CornerRadius="10"
+                                HeightRequest="42"
+                                Command="{Binding NextFlashcardCommand}"/>
+                    </Grid>
+
+                    <Button Text="Kartı Çevir 🔄"
+                            BackgroundColor="#0EA5E9"
+                            TextColor="White"
+                            FontSize="13"
+                            FontAttributes="Bold"
+                            CornerRadius="10"
+                            HeightRequest="40"
+                            Command="{Binding FlipFlashcardCommand}"/>
+
+                </VerticalStackLayout>
+            </ScrollView>
+
+        </Grid>
+    </Grid>
+</ContentPage>

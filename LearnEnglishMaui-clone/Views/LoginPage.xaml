@@ -1,0 +1,143 @@
+<!-- IngilizceProje/MAUIClient/Views/LoginPage.xaml -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:IngilizceProjeMAUI.ViewModels"
+             xmlns:converters="clr-namespace:IngilizceProjeMAUI.Converters"
+             x:Class="IngilizceProjeMAUI.Views.LoginPage"
+             x:DataType="vm:LoginViewModel"
+             Shell.NavBarIsVisible="False"
+             Background="{AppThemeBinding Light={StaticResource LightPageBg}, Dark={StaticResource DarkBgGradient}}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:BoolToValueConverter x:Key="KeyValueConverter" />
+            <Color x:Key="PrimaryColor">#F8FAFC</Color>
+            <Color x:Key="SecondaryColor">gray</Color>
+            <Color x:Key="CardColor">#CC1E293B</Color>
+            <Color x:Key="TextColor">black</Color>
+            <Color x:Key="PlaceholderColor">#94A3B8</Color>
+            <Color x:Key="BorderColor">#312E81</Color>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <Grid RowDefinitions="Auto, *" VerticalOptions="FillAndExpand" Padding="20">
+            <!-- Header Logo/Title Area -->
+            <VerticalStackLayout Grid.Row="0" HorizontalOptions="Center" Spacing="10" Margin="0,30,0,24">
+                <Border WidthRequest="72" HeightRequest="72" StrokeShape="RoundRectangle 20" 
+                        Background="{StaticResource PrimaryGradient}" StrokeThickness="0">
+                    <Label Text="A" FontSize="36" TextColor="White" FontAttributes="Bold"
+                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                </Border>
+                <Label Text="Antigravity English" FontSize="26" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark=White}" HorizontalOptions="Center"/>
+                <Label Text="Kelime Öğren ve Pratik Yap" FontSize="13" TextColor="{AppThemeBinding Light={StaticResource LightTextSecondary}, Dark=#94A3B8}" HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+            <!-- Card Body Area -->
+            <Border Grid.Row="1" BackgroundColor="{AppThemeBinding Light={StaticResource LightCardBg}, Dark={StaticResource CardColor}}" StrokeShape="RoundRectangle 20"
+                    Stroke="{AppThemeBinding Light={StaticResource LightBorder}, Dark={StaticResource BorderColor}}" StrokeThickness="1" Padding="24" MaximumWidthRequest="450"
+                    VerticalOptions="Center" HorizontalOptions="Fill">
+                <Border.Shadow>
+                    <Shadow Brush="#000000" Offset="0,6" Radius="14" Opacity="{AppThemeBinding Light=0.06, Dark=0.3}" />
+                </Border.Shadow>
+                <VerticalStackLayout Spacing="16">
+                    <Label Text="{Binding IsRegisterMode, Converter={StaticResource KeyValueConverter}, ConverterParameter='Kayıt Ol|Giriş Yap'}" 
+                           FontSize="22" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark=White}"/>
+
+                    <!-- Error Message Banner -->
+                    <Border IsVisible="{Binding ErrorMessage, Converter={StaticResource KeyValueConverter}, ConverterParameter='True|False'}"
+                            BackgroundColor="{AppThemeBinding Light=#FEF2F2, Dark=#450A0A}"
+                            Stroke="{AppThemeBinding Light=#FECACA, Dark=#EF4444}"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 8"
+                            Padding="12,8">
+                        <Label Text="{Binding ErrorMessage}" TextColor="#EF4444" FontSize="12" FontAttributes="Bold" HorizontalTextAlignment="Center"/>
+                    </Border>
+
+                    <!-- UserName Field (only for register) -->
+                    <VerticalStackLayout Spacing="5" IsVisible="{Binding IsRegisterMode}">
+                        <Label Text="Kullanıcı Adı" TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark=White}" FontSize="13" FontAttributes="Bold"/>
+                        <Border Stroke="{AppThemeBinding Light={StaticResource LightBorder}, Dark={StaticResource BorderColor}}" StrokeShape="RoundRectangle 10" StrokeThickness="1" BackgroundColor="{AppThemeBinding Light={StaticResource LightInputBg}, Dark=#0F172A}" HeightRequest="44">
+                            <Entry Text="{Binding UserName}" Placeholder="ornek_kullanici" 
+                                   TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark=White}" PlaceholderColor="{AppThemeBinding Light=#94A3B8, Dark=#64748B}"
+                                   Margin="10,0" Keyboard="Text" VerticalOptions="Center"/>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Email / UserName Field -->
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="{Binding IsRegisterMode, Converter={StaticResource KeyValueConverter}, ConverterParameter='E-posta Adresi|E-posta veya Kullanıcı Adı'}" 
+                               TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark=White}" FontSize="13" FontAttributes="Bold"/>
+                        <Border Stroke="{AppThemeBinding Light={StaticResource LightBorder}, Dark={StaticResource BorderColor}}" StrokeShape="RoundRectangle 10" StrokeThickness="1" BackgroundColor="{AppThemeBinding Light={StaticResource LightInputBg}, Dark=#0F172A}" HeightRequest="44">
+                            <Entry Text="{Binding Email}" 
+                                   Placeholder="{Binding IsRegisterMode, Converter={StaticResource KeyValueConverter}, ConverterParameter='eposta@ornek.com|demo veya eposta@ornek.com'}" 
+                                   TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark=White}" PlaceholderColor="{AppThemeBinding Light=#94A3B8, Dark=#64748B}"
+                                   Margin="10,0" Keyboard="Text" VerticalOptions="Center"/>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Password Field -->
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="{Binding IsRegisterMode, Converter={StaticResource KeyValueConverter}, ConverterParameter='Şifre (En az 3 karakter)|Şifre'}" 
+                               TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark=White}" FontSize="13" FontAttributes="Bold"/>
+                        <Border Stroke="{AppThemeBinding Light={StaticResource LightBorder}, Dark={StaticResource BorderColor}}" StrokeShape="RoundRectangle 10" StrokeThickness="1" BackgroundColor="{AppThemeBinding Light={StaticResource LightInputBg}, Dark=#0F172A}" HeightRequest="44">
+                            <Entry Text="{Binding Password}" Placeholder="••••••" IsPassword="True"
+                                   TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark=White}" PlaceholderColor="{AppThemeBinding Light=#94A3B8, Dark=#64748B}"
+                                   Margin="10,0" VerticalOptions="Center"/>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Remember Me Option (only in Login mode) -->
+                    <Grid ColumnDefinitions="Auto, *" Margin="2,-2,0,0"
+                          IsVisible="{Binding IsRegisterMode, Converter={StaticResource KeyValueConverter}, ConverterParameter='False|True'}">
+                        <HorizontalStackLayout Grid.Column="0" Spacing="8" VerticalOptions="Center">
+                            <CheckBox IsChecked="{Binding RememberMe}" Color="#4F46E5" VerticalOptions="Center" />
+                            <Label Text="Beni Hatırla" 
+                                   TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark=White}" 
+                                   FontSize="13" 
+                                   VerticalOptions="Center">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ToggleRememberMeCommand}"/>
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </HorizontalStackLayout>
+                    </Grid>
+
+                    <!-- Main Action Button -->
+                    <Button Text="{Binding IsRegisterMode, Converter={StaticResource KeyValueConverter}, ConverterParameter='Kayıt Ol|Giriş Yap'}" 
+                            Command="{Binding AuthenticateCommand}"
+                            Background="{StaticResource PrimaryGradient}" TextColor="White" FontAttributes="Bold" HeightRequest="46" CornerRadius="10"
+                            Margin="0,4,0,0"/>
+
+                    <!-- Quick Demo Login Button (Only in login mode) -->
+                    <Button Text="⚡ Demo Hesabı ile Hızlı Giriş (demo)"
+                            Command="{Binding QuickDemoLoginCommand}"
+                            IsVisible="{Binding IsRegisterMode, Converter={StaticResource KeyValueConverter}, ConverterParameter='False|True'}"
+                            BackgroundColor="{AppThemeBinding Light=#EEF2FF, Dark=#312E81}"
+                            TextColor="{AppThemeBinding Light=#4F46E5, Dark=#C7D2FE}"
+                            BorderColor="{AppThemeBinding Light=#C7D2FE, Dark=#4F46E5}"
+                            BorderWidth="1"
+                            FontAttributes="Bold"
+                            FontSize="12"
+                            HeightRequest="40"
+                            CornerRadius="10"/>
+
+                    <!-- Activity Indicator -->
+                    <ActivityIndicator IsRunning="{Binding IsBusy}" Color="#4F46E5" HorizontalOptions="Center" HeightRequest="26"/>
+
+                    <!-- Toggle Mode Link -->
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="5" Margin="0,4,0,0">
+                        <Label Text="{Binding IsRegisterMode, Converter={StaticResource KeyValueConverter}, ConverterParameter='Hesabınız var mı?|Hesabınız yok mu?'}" 
+                               TextColor="{StaticResource PlaceholderColor}" FontSize="13"/>
+                        <Label Text="{Binding IsRegisterMode, Converter={StaticResource KeyValueConverter}, ConverterParameter='Giriş Yapın|Kayıt Olun'}" 
+                               TextColor="#4F46E5" FontSize="13" FontAttributes="Bold">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ToggleModeCommand}"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+    </ScrollView>
+</ContentPage>

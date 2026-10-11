@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- IngilizceProje/MAUIClient/AppShell.xaml -->
+<Shell
+    x:Class="IngilizceProjeMAUI.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:IngilizceProjeMAUI"
+    xmlns:views="clr-namespace:IngilizceProjeMAUI.Views"
+    Shell.FlyoutBehavior="Disabled"
+    Title="Antigravity English">
+
+    <!-- Login Route -->
+    <ShellContent
+        Route="LoginPage"
+        ContentTemplate="{DataTemplate views:LoginPage}"
+        FlyoutItemIsVisible="False" />
+
+    <!-- Main App TabBar -->
+    <TabBar Route="MainPage" x:Name="MainAppTabBar">
+        <Tab Title="Kelimelerim">
+            <ShellContent ContentTemplate="{DataTemplate views:WordListPage}" />
+        </Tab>
+        <Tab Title="Mühendis Eğitimi">
+            <ShellContent ContentTemplate="{DataTemplate views:TechDictionaryPage}" />
+        </Tab>
+        <Tab Title="AI Koç">
+            <ShellContent ContentTemplate="{DataTemplate views:AiChatPage}" />
+        </Tab>
+        <Tab Title="İstatistik">
+            <ShellContent ContentTemplate="{DataTemplate views:StatsAndGoalPage}" />
+        </Tab>
+    </TabBar>
+
+</Shell>

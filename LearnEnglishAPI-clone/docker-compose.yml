@@ -1,0 +1,52 @@
+services:
+  # 1. MS SQL Server Veritabanı
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: vocab_mssql
+    restart: unless-stopped
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=KelimeOgren123!
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'KelimeOgren123!' -C -Q 'SELECT 1' || /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'KelimeOgren123!' -Q 'SELECT 1' || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+      start_period: 10s
+
+  # 2. .NET 9 Web API
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vocab_api
+    restart: unless-stopped
+    ports:
+      - "5030:5030"
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=mssql;Database=IngilizceKelimeDb;User Id=sa;Password=KelimeOgren123!;TrustServerCertificate=True;MultipleActiveResultSets=true
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5030
+    depends_on:
+      mssql:
+        condition: service_healthy
+
+  # 3. React Web Frontend (Nginx)
+  client:
+    build:
+      context: ./web-client
+      dockerfile: Dockerfile
+    container_name: vocab_web
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+
+volumes:
+  mssql_data:
+    name: vocab_mssql_data
