@@ -348,6 +348,14 @@
                                                     CommandParameter="{Binding .}"/>
                                         </Grid>
 
+                                        <Button Text="🔊 Telaffuzu dinle"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:WordListViewModel}}, Path=SpeakWordCommand}"
+                                                CommandParameter="{Binding EnglishWord}"
+                                                SemanticProperties.Description="İngilizce kelimenin telaffuzunu dinle"
+                                                BackgroundColor="{AppThemeBinding Light=#EEF2FF, Dark=#312E81}"
+                                                TextColor="{AppThemeBinding Light=#4338CA, Dark=#C7D2FE}"
+                                                HorizontalOptions="Start" FontSize="13" CornerRadius="10" />
+
                                         <!-- Middle Row: Turkish Meaning -->
                                         <Label Text="{Binding TurkishMeaning}"
                                                FontSize="15"
@@ -1045,6 +1053,14 @@
                             </VerticalStackLayout>
                         </Grid>
                     </Border>
+
+                    <Button Text="🔊 Telaffuzu dinle"
+                            Command="{Binding SpeakWordCommand}"
+                            CommandParameter="{Binding CurrentFlashcard.EnglishWord}"
+                            SemanticProperties.Description="Karttaki İngilizce kelimenin telaffuzunu dinle"
+                            BackgroundColor="{AppThemeBinding Light=#EEF2FF, Dark=#312E81}"
+                            TextColor="{AppThemeBinding Light=#4338CA, Dark=#C7D2FE}"
+                            FontSize="14" CornerRadius="12" />
 
                     <!-- Flashcard Navigation Controls: [Önceki] [Kartı Çevir] [Sonraki] -->
                     <Grid ColumnDefinitions="*, 1.4*, *" ColumnSpacing="10" VerticalOptions="Center">

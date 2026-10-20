@@ -187,6 +187,7 @@ namespace IngilizceProjeMAUI.ViewModels
     {
         private readonly ApiService _apiService;
         private readonly GeminiAiService _geminiAiService;
+        private readonly PronunciationService _pronunciationService;
         private readonly Random _random = new();
 
         private List<UserWordItem> _allUserWords = new();
@@ -318,11 +319,19 @@ namespace IngilizceProjeMAUI.ViewModels
             ? $"Kart {FlashcardIndex + 1} / {TotalFlashcards}"
             : "Kart 0 / 0";
 
-        public WordListViewModel(ApiService apiService, GeminiAiService geminiAiService)
+        public WordListViewModel(ApiService apiService, GeminiAiService geminiAiService, PronunciationService pronunciationService)
         {
             _apiService = apiService;
             _geminiAiService = geminiAiService;
+            _pronunciationService = pronunciationService;
         }
+
+        [RelayCommand(AllowConcurrentExecutions = true)]
+        private Task SpeakWordAsync(string? text) => _pronunciationService.SpeakAsync(text);
+
+        public void StopPronunciation() => _pronunciationService.Stop();
+
+        partial void OnCurrentFlashcardChanged(UserWordItem? value) => StopPronunciation();
 
         partial void OnSearchQueryChanged(string value)
         {
@@ -339,6 +348,7 @@ namespace IngilizceProjeMAUI.ViewModels
         {
             if (string.IsNullOrWhiteSpace(tabName)) return;
 
+            StopPronunciation();
             ActiveSubTab = tabName;
 
             if (tabName == "Test")

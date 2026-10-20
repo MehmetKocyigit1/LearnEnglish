@@ -12,6 +12,7 @@ namespace IngilizceProjeMAUI.ViewModels
     public partial class FlashcardViewModel : ObservableObject
     {
         private readonly ApiService _apiService;
+        private readonly PronunciationService _pronunciationService;
 
         [ObservableProperty]
         private WordDto? _currentWord;
@@ -28,15 +29,22 @@ namespace IngilizceProjeMAUI.ViewModels
         [ObservableProperty]
         private string _emptyMessage = "Henüz kelime eklenmemiş veya yüklenecek kelime yok.";
 
-        public FlashcardViewModel(ApiService apiService)
+        public FlashcardViewModel(ApiService apiService, PronunciationService pronunciationService)
         {
             _apiService = apiService;
+            _pronunciationService = pronunciationService;
             HasWord = false;
         }
+
+        [RelayCommand(AllowConcurrentExecutions = true)]
+        private Task SpeakWordAsync(string? text) => _pronunciationService.SpeakAsync(text);
+
+        public void StopPronunciation() => _pronunciationService.Stop();
 
         [RelayCommand]
         public async Task LoadNextWordAsync()
         {
+            StopPronunciation();
             IsBusy = true;
             IsFlipped = false;
             CurrentWord = null;

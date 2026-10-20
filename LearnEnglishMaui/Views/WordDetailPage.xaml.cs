@@ -11,5 +11,12 @@ namespace IngilizceProjeMAUI.Views
             InitializeComponent();
             BindingContext = viewModel;
         }
+
+        protected override void OnDisappearing()
+        {
+            if (BindingContext is WordDetailViewModel viewModel)
+                viewModel.StopPronunciation();
+            base.OnDisappearing();
+        }
     }
 }

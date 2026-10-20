@@ -29,6 +29,8 @@ namespace IngilizceProjeMAUI
             builder.Services.AddSingleton<ApiService>();
             builder.Services.AddSingleton<NotificationService>();
             builder.Services.AddSingleton<GeminiAiService>();
+            builder.Services.AddSingleton<Microsoft.Maui.Media.ITextToSpeech>(Microsoft.Maui.Media.TextToSpeech.Default);
+            builder.Services.AddSingleton<PronunciationService>();
 
             // Register ViewModels
             builder.Services.AddTransient<LoginViewModel>();

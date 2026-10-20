@@ -13,6 +13,7 @@ namespace IngilizceProjeMAUI.ViewModels
     public partial class WordDetailViewModel : ObservableObject
     {
         private readonly ApiService _apiService;
+        private readonly PronunciationService _pronunciationService;
 
         [ObservableProperty]
         private string _wordIdString = string.Empty;
@@ -23,10 +24,16 @@ namespace IngilizceProjeMAUI.ViewModels
         [ObservableProperty]
         private bool _isBusy;
 
-        public WordDetailViewModel(ApiService apiService)
+        public WordDetailViewModel(ApiService apiService, PronunciationService pronunciationService)
         {
             _apiService = apiService;
+            _pronunciationService = pronunciationService;
         }
+
+        [RelayCommand(AllowConcurrentExecutions = true)]
+        private Task SpeakWordAsync(string? text) => _pronunciationService.SpeakAsync(text);
+
+        public void StopPronunciation() => _pronunciationService.Stop();
 
         // Triggered when WordIdString query parameter is set
         partial void OnWordIdStringChanged(string value)

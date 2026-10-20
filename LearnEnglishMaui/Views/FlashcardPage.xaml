@@ -75,6 +75,13 @@
 
         <!-- Response Action Buttons -->
         <VerticalStackLayout Grid.Row="1" Spacing="12" IsVisible="{Binding HasWord}">
+            <Button Text="🔊 Telaffuzu dinle"
+                    Command="{Binding SpeakWordCommand}"
+                    CommandParameter="{Binding CurrentWord.EnglishWord}"
+                    SemanticProperties.Description="Karttaki İngilizce kelimenin telaffuzunu dinle"
+                    BackgroundColor="{AppThemeBinding Light=#EEF2FF, Dark=#312E81}"
+                    TextColor="{AppThemeBinding Light=#4338CA, Dark=#C7D2FE}"
+                    FontSize="14" CornerRadius="10" HeightRequest="48" />
             <!-- Visible only when card is flipped -->
             <Grid ColumnDefinitions="*, *" ColumnSpacing="15" IsVisible="{Binding IsFlipped}">
                 <Button Grid.Column="0" Text="Yanlış Bildim ❌" Command="{Binding SubmitAnswerCommand}" CommandParameter="{x:Boolean False}"

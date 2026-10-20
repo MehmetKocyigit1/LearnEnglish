@@ -47,6 +47,13 @@
                     </Grid>
 
                     <Label Text="{Binding Word.EnglishWord}" FontSize="34" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource TextColor}}"/>
+                    <Button Text="🔊 Telaffuzu dinle"
+                            Command="{Binding SpeakWordCommand}"
+                            CommandParameter="{Binding Word.EnglishWord}"
+                            SemanticProperties.Description="İngilizce kelimenin telaffuzunu dinle"
+                            BackgroundColor="{AppThemeBinding Light=#EEF2FF, Dark=#312E81}"
+                            TextColor="{AppThemeBinding Light=#4338CA, Dark=#C7D2FE}"
+                            HorizontalOptions="Start" FontSize="14" CornerRadius="10" />
                     <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource LightBorder}, Dark={StaticResource BorderColor}}"/>
                     <Label Text="Türkçe Anlamı" FontSize="12" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource LightTextSecondary}, Dark=#94A3B8}"/>
                     <Label Text="{Binding Word.TurkishMeaning}" FontSize="22" FontAttributes="Bold" TextColor="#6366F1"/>
