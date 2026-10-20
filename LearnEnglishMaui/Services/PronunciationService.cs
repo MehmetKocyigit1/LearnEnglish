@@ -43,6 +43,9 @@ public sealed class PronunciationService(ITextToSpeech textToSpeech)
             if (voice is null)
             {
 #if WINDOWS
+                if (await DesktopSpeech.TrySpeakEnglishAsync(text.Trim(), cancellation.Token))
+                    return;
+
                 await ShowMessageAsync("Uygulamanın kullanabileceği İngilizce metin okuma sesi bulunamadı. " +
                     "Windows Ayarları > Zaman ve dil > Konuşma > Sesleri yönet > Ses ekle bölümünden " +
                     "English (United States) ses paketini yükle, ardından uygulamayı kapatıp yeniden aç. " +
