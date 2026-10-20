@@ -38,3 +38,8 @@ TestResults/
 # OS generated files
 .DS_Store
 Thumbs.db
+
+# Local Kokoro dependencies, downloaded model and generated speech
+tools/kokoro-tts/node_modules/
+tools/kokoro-tts/.cache/
+tools/kokoro-tts/*.log

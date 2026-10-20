@@ -5,10 +5,20 @@ using Microsoft.Maui.Media;
 
 namespace IngilizceProjeMAUI.Services;
 
-/// <summary>Uses the device's English voice without an external API key.</summary>
-public sealed class PronunciationService(ITextToSpeech textToSpeech)
+/// <summary>Uses local Kokoro on Windows and the device's English voice on mobile.</summary>
+public sealed class PronunciationService
 {
+#if !WINDOWS
+    private readonly ITextToSpeech _textToSpeech;
+#endif
     private CancellationTokenSource? _currentSpeech;
+
+    public PronunciationService(ITextToSpeech textToSpeech)
+    {
+#if !WINDOWS
+        _textToSpeech = textToSpeech;
+#endif
+    }
 
     public void Stop()
     {
@@ -27,7 +37,10 @@ public sealed class PronunciationService(ITextToSpeech textToSpeech)
 
         try
         {
-            var locales = (await textToSpeech.GetLocalesAsync()).ToList();
+#if WINDOWS
+            await KokoroSpeech.SpeakAsync(text.Trim(), cancellation.Token);
+#else
+            var locales = (await _textToSpeech.GetLocalesAsync()).ToList();
             cancellation.Token.ThrowIfCancellationRequested();
 
             var englishVoices = locales.Where(locale =>
@@ -42,27 +55,18 @@ public sealed class PronunciationService(ITextToSpeech textToSpeech)
 
             if (voice is null)
             {
-#if WINDOWS
-                if (await DesktopSpeech.TrySpeakEnglishAsync(text.Trim(), cancellation.Token))
-                    return;
-
-                await ShowMessageAsync("Uygulamanın kullanabileceği İngilizce metin okuma sesi bulunamadı. " +
-                    "Windows Ayarları > Zaman ve dil > Konuşma > Sesleri yönet > Ses ekle bölümünden " +
-                    "English (United States) ses paketini yükle, ardından uygulamayı kapatıp yeniden aç. " +
-                    "Yalnızca İngilizce klavye eklemek yeterli değildir.");
-#else
                 await ShowMessageAsync("Cihazında İngilizce konuşma sesi bulunamadı. " +
                     "Cihazının metin okuma veya konuşma ayarlarından İngilizce ses paketi yükleyip tekrar dene.");
-#endif
                 return;
             }
 
-            await textToSpeech.SpeakAsync(text.Trim(), new SpeechOptions
+            await _textToSpeech.SpeakAsync(text.Trim(), new SpeechOptions
             {
                 Locale = voice,
                 Pitch = 1.0f,
                 Volume = 1.0f
             }, cancellation.Token);
+#endif
         }
         catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
         {
@@ -72,7 +76,13 @@ public sealed class PronunciationService(ITextToSpeech textToSpeech)
         {
             Debug.WriteLine($"Pronunciation failed: {exception}");
             if (!cancellation.IsCancellationRequested)
+#if WINDOWS
+                await ShowMessageAsync("Kokoro seslendirmesi başlatılamadı. İlk kurulum için projenin " +
+                    "tools/kokoro-tts/Setup-Kokoro.ps1 dosyasını çalıştırıp uygulamayı yeniden başlat. " +
+                    "İlk model indirmesi internet gerektirir.");
+#else
                 await ShowMessageAsync("Kelime seslendirilemedi. Cihazının ses ve İngilizce metin okuma ayarlarını kontrol edip tekrar dene.");
+#endif
         }
         finally
         {

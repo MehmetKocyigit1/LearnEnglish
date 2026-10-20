@@ -1,0 +1,12 @@
+{
+  "name": "learnenglish-kokoro-tts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "warmup": "node server.mjs --warmup"
+  },
+  "engines": { "node": ">=20" },
+  "dependencies": { "@huggingface/transformers": "3.8.1", "kokoro-js": "1.2.1" }
+}
