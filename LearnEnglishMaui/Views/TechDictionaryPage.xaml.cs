@@ -15,6 +15,12 @@ namespace IngilizceProjeMAUI.Views
             BindingContext = _viewModel;
         }
 
+        protected override void OnDisappearing()
+        {
+            _viewModel.StopPronunciation();
+            base.OnDisappearing();
+        }
+
         protected override async void OnAppearing()
         {
             base.OnAppearing();

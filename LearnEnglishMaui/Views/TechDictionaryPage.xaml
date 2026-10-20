@@ -1158,6 +1158,14 @@
                     </Border>
 
                     <!-- Flashcard Navigation Controls: [Önceki] [Kartı Çevir] [Sonraki] -->
+                    <Button Text="🔊 Telaffuzu dinle"
+                            Command="{Binding SpeakWordCommand}"
+                            CommandParameter="{Binding CurrentFlashcard.English}"
+                            SemanticProperties.Description="Karttaki İngilizce kelimenin telaffuzunu dinle"
+                            BackgroundColor="{AppThemeBinding Light=#EEF2FF, Dark=#312E81}"
+                            TextColor="{AppThemeBinding Light=#4338CA, Dark=#C7D2FE}"
+                            FontSize="14" CornerRadius="12" />
+
                     <Grid ColumnDefinitions="*, 1.4*, *" ColumnSpacing="10" VerticalOptions="Center">
                         <Button Grid.Column="0"
                                 Text="← Önceki"

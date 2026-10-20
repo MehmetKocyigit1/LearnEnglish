@@ -42,8 +42,15 @@ public sealed class PronunciationService(ITextToSpeech textToSpeech)
 
             if (voice is null)
             {
+#if WINDOWS
+                await ShowMessageAsync("Uygulamanın kullanabileceği İngilizce metin okuma sesi bulunamadı. " +
+                    "Windows Ayarları > Zaman ve dil > Konuşma > Sesleri yönet > Ses ekle bölümünden " +
+                    "English (United States) ses paketini yükle, ardından uygulamayı kapatıp yeniden aç. " +
+                    "Yalnızca İngilizce klavye eklemek yeterli değildir.");
+#else
                 await ShowMessageAsync("Cihazında İngilizce konuşma sesi bulunamadı. " +
                     "Cihazının metin okuma veya konuşma ayarlarından İngilizce ses paketi yükleyip tekrar dene.");
+#endif
                 return;
             }
 

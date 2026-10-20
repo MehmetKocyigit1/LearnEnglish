@@ -218,6 +218,7 @@ namespace IngilizceProjeMAUI.ViewModels
     public partial class TechDictionaryViewModel : ObservableObject
     {
         private readonly ApiService _apiService;
+        private readonly PronunciationService _pronunciationService;
         private readonly Random _random = new();
         private List<TechWordItem> _allWords = new();
 
@@ -342,11 +343,23 @@ namespace IngilizceProjeMAUI.ViewModels
             ? $"Kart {FlashcardIndex + 1} / {TotalFlashcards}"
             : "Kart 0 / 0";
 
-        public TechDictionaryViewModel(ApiService apiService)
+        public TechDictionaryViewModel(ApiService apiService, PronunciationService pronunciationService)
         {
             _apiService = apiService;
+            _pronunciationService = pronunciationService;
             MainThread.BeginInvokeOnMainThread(async () => await LoadDatasetAsync());
         }
+
+        [RelayCommand(AllowConcurrentExecutions = true)]
+        private Task SpeakWordAsync(string? text) => _pronunciationService.SpeakAsync(text);
+
+        public void StopPronunciation() => _pronunciationService.Stop();
+
+        partial void OnCurrentFlashcardChanged(TechWordItem? value) => StopPronunciation();
+
+        partial void OnActiveSubTabChanged(string value) => StopPronunciation();
+
+        partial void OnIsCategorySelectedChanged(bool value) => StopPronunciation();
 
         partial void OnSearchQueryChanged(string value)
         {
